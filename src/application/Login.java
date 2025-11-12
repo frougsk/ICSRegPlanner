@@ -73,15 +73,16 @@ public class Login {
         VBox passbox = new VBox(8,passwordStack,showPassword);
         
         // =========== SIGN IN FEATURES ===========
-        Image unhover = new Image(Login.class.getResource("/assets/Unhovered_sign.png").toExternalForm());
+        Image unhover = new Image(Login.class.getResource("/assets/normal_button.png").toExternalForm());
         Image hover = new Image(Login.class.getResource("/assets/Hovered_sign.png").toExternalForm());
         
         ImageView buttonIcon = new ImageView(unhover);
-        buttonIcon.setFitWidth(40); buttonIcon.setFitHeight(40);
+        buttonIcon.setFitWidth(40); 
+		buttonIcon.setFitHeight(40);
         
-        Button log = new Button("Sign In",buttonIcon);
-        log.setTextFill(Color.web("#FFFFFF"));
-        log.setContentDisplay(ContentDisplay.LEFT);
+        Button log = new Button();
+		log.setGraphic(buttonIcon);
+        log.setStyle("-fx-background-color: transparent; -fx-cursor: hand;");
 
 		 // Hover effect
         log.setOnMouseEntered(e -> {
