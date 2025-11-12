@@ -25,7 +25,7 @@ import javafx.util.Duration;
 public class Login {
 	public static Scene welcomeShow(double width, double height, Stage mainStage, ArrayList<Account> accounts) {
 		// =========== TOP BAR ===========
-		ImageView brand = new ImageView(new Image("file:assets/brand.png"));
+		ImageView brand = new ImageView(Login.class.getResource("/assets/brand.png").toExternalForm());
 		double ogWidth = brand.getImage().getWidth();
 		brand.setPreserveRatio(true); brand.setFitWidth(ogWidth * 0.04);
 		
@@ -73,8 +73,8 @@ public class Login {
         VBox passbox = new VBox(8,passwordStack,showPassword);
         
         // =========== SIGN IN FEATURES ===========
-        Image unhover = new Image("file:assets/Unhovered_sign.png");
-        Image hover = new Image("file:assets/Hovered_sign.png");
+        Image unhover = new Image(Login.class.getResource("/assets/Unhovered_sign.png").toExternalForm());
+        Image hover = new Image(Login.class.getResource("/assets/Hovered_sign.png").toExternalForm());
         
         ImageView buttonIcon = new ImageView(unhover);
         buttonIcon.setFitWidth(40); buttonIcon.setFitHeight(40);
@@ -134,7 +134,7 @@ public class Login {
 		signin.getStyleClass().add("login-box");
 		
 		// =========== LOGO ===========
-		ImageView logo = new ImageView(new Image("file:assets/SMICS_logo.png"));
+		ImageView logo = new ImageView(Login.class.getResource("/assets/SMICS_logo.png").toExternalForm());
 		double logoWidth = logo.getImage().getWidth();
 		logo.setPreserveRatio(true); logo.setFitWidth(logoWidth * 0.15);
 		
@@ -175,7 +175,7 @@ public class Login {
 	
 	public static Scene loginSuccess(double width, double height, Stage mainStage, Account account, HBox topBar) {
 		// =========== LOGIN SUCCESS SCENE ===========
-		ImageView suc = new ImageView(new Image("file:assets/login_success.png"));
+		ImageView suc = new ImageView(Login.class.getResource("/assets/login_success.png").toExternalForm());
 		double ogWidth = suc.getImage().getWidth();
 		suc.setPreserveRatio(true); suc.setFitWidth(ogWidth * 0.25);
 		
