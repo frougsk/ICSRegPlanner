@@ -27,5 +27,11 @@ public class Account {
     public String getLastName()     { return lastName; }
     public String getProgram()     { return program; }
     public String getPassword()     { return password; }
-    
+
+	//Converts to file format
+	public String toFile() {
+		return String.join(", ", emailAddress, firstName, middleName, lastName, program, password);
+	}
+	
 }
+
