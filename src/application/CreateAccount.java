@@ -148,14 +148,8 @@ public class CreateAccount {
 				accounts.add(a);
 				saveAccount(a);
 				new Alert(Alert.AlertType.INFORMATION,"Account Successfully Created").showAndWait();
-			//	mainStage.setScene(Login.welcomeShow(width, height, mainStage, accounts));
-			
-				Scene welcomeScene = Login.welcomeShow(width, height, mainStage, accounts);
-			    	if(welcomeScene != null) {
-			    		mainStage.setScene(welcomeScene);
-			    	} else {
-			    		System.err.println("Error: welcomeShow returned null!");
-		}}
+				mainStage.setScene(Login.welcomeShow(width, height, mainStage, accounts));
+			}
 		});
 
 		// =========== LAYOUT ===========
@@ -191,9 +185,7 @@ public class CreateAccount {
 		try(FileWriter fw = new FileWriter(file, true)){
 			fw.write(a.toFile() + "\n");
 			//for (Account a: accounts) p.println(a.toFile());
-		} catch(IOException e) {
-			new Alert(Alert.AlertType.ERROR, "Failed to save account data").show();
-		    e.printStackTrace();
-			}
+		} catch(IOException e) {e.printStackTrace();}
 	}
+
 }
