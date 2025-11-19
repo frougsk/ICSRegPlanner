@@ -1,4 +1,6 @@
-package application;
+package fileHandlers;
+
+import bases.Account;
 
 import java.io.*;
 import java.nio.file.*;
@@ -38,3 +40,4 @@ public class AccountLoader {
 	}
 		
 }
+
