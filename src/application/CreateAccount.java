@@ -160,13 +160,15 @@ public class CreateAccount {
 		HBox.setHgrow(middleName, Priority.ALWAYS);
 		
 		VBox signup = new VBox(15);
-		signup.setPadding(new Insets(30, 350, 20, 350));
+		signup.setPadding(new Insets(50,30,0,30));
+		
 		signup.setAlignment(Pos.CENTER);
 		signup.getStyleClass().add("login-box");
 		signup.getChildren().addAll(sign, newAccount, email, fmName,
 				lastName, degree, password, confirmPw, passBox, buttons);
 			
         StackPane root = new StackPane(signup);
+        root.setPadding(new Insets(30, 450, 20, 450));
 		root.setPrefSize(width, height);
 		root.setMinSize(width, height);
 		root.setMaxSize(width, height);
@@ -189,3 +191,4 @@ public class CreateAccount {
 	}
 
 }
+
