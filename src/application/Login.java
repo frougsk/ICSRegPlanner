@@ -1,6 +1,10 @@
 package application;
 
-// FX Imports
+// Package imports
+import bases.Account;
+
+// JavaFX Imports
+import javafx.util.Duration;
 import javafx.animation.FadeTransition;
 import javafx.animation.PauseTransition;
 import javafx.application.Platform;
@@ -18,9 +22,8 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import javafx.stage.Stage;
 
-// Java Imports
+// Other Java Imports
 import java.util.ArrayList;
-import javafx.util.Duration;
 
 public class Login {
 	public static Scene welcomeShow(double width, double height, Stage mainStage, ArrayList<Account> accounts) {
@@ -240,3 +243,4 @@ public class Login {
 // Fade Transition: https://genuinecoder.com/javafx-splash-screen-loading-screen/
 
 // Reference for end of animation: https://www.tutorialspoint.com/javafx/javafx_sequential_transition.htm
+
