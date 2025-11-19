@@ -1,5 +1,9 @@
 package application;
 
+// Package imports
+import bases.Account;
+
+// JavaFX imports
 import javafx.animation.TranslateTransition;
 import javafx.application.Platform;
 import javafx.event.EventHandler;
@@ -81,5 +85,6 @@ public class Smi_Dashboard {
         return scene;
     }
 }
+
 
 
