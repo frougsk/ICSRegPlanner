@@ -10,7 +10,10 @@ import java.util.*;
 
 public class CourseLoader {
 	// Attributes / Temp Storage
-	private ArrayList<Course> bs, master, phd, mit;
+	private final ArrayList<Course> bs = new ArrayList<>();
+	private final ArrayList<Course> master = new ArrayList<>();
+	private final ArrayList<Course> phd = new ArrayList<>();
+	private final ArrayList<Course> mit = new ArrayList<>();
 	
 	// Getters
 	public ArrayList<Course> getBS() { return bs; }
@@ -19,7 +22,7 @@ public class CourseLoader {
 	public ArrayList<Course> getMITS() { return mit; }
 	
 	// Get Courses
-	public ArrayList<Course> getCoures(Path path){
+	public static ArrayList<Course> getCoures(Path path){
 		ArrayList<Course> courses = new ArrayList<>();
 		
 		try(BufferedReader br = Files.newBufferedReader(path)){
@@ -67,7 +70,7 @@ public class CourseLoader {
 			return courses;
 			
 		}catch (IOException e) {
-            System.out.println("Error reading albums: " + e.getMessage());
+            System.out.println("Error reading courses: " + e.getMessage());
         }
 		
 		return courses;
