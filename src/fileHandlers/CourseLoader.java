@@ -18,7 +18,7 @@ public class CourseLoader {
 	public ArrayList<Course> getPHD() { return phd; }
 	public ArrayList<Course> getMITS() { return mit; }
 	
-	// Get MIT Courses
+	// Get Courses
 	public ArrayList<Course> getCoures(Path path){
 		ArrayList<Course> courses = new ArrayList<>();
 		
