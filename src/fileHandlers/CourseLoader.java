@@ -61,10 +61,12 @@ public class CourseLoader {
 				courses.add(c);
 				
 				// Add to storage arraylist
-				if(type == Course.BSCS) bs.add(c);
-				else if(type == Course.MIT) mit.add(c);
-				else if(type == Course.MASTER) master.add(c);
-				else phd.add(c);
+				switch(type) {
+					case Course.BSCS: bs.add(c); break;
+					case Course.MASTER: master.add(c); break;
+					case Course.PHD: phd.add(c); break;
+					case Course.MIT: mit.add(c); break;
+				}
 			}
 			
 			return courses;
