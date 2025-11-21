@@ -9,10 +9,10 @@ public class Course {
 	private final String studentType;
 
 	// Constants
-	public static final String BSCS = "Bachelor";
-	public static final String MASTER = "Master";
-	public static final String PHD = "PhD";
-	public static final String MIT = "Master in IT";
+	public static final String BSCS = "BS Computer Science";
+	public static final String MASTER = "MS Computer Science";
+	public static final String PHD = "PhD Computer Science";
+	public static final String MIT = "Master of Informtion Technology";
 	
 	// Constructor
 	public Course(String code, String name, int units, String description, String type) {
