@@ -90,13 +90,13 @@ public class CourseView {
 		CourseLoader loader = new CourseLoader();
 		ArrayList<Course> bs = loader.getBS();
 		ArrayList<Course> master = loader.getMasters();
-//		ArrayList<Course> phd = loader.getPHD();
+		ArrayList<Course> phd = loader.getPHD();
 		ArrayList<Course> mit = loader.getMITS();
 		
 		ObservableList<Course> allCourse = FXCollections.observableArrayList();
 		allCourse.addAll(bs);
 		allCourse.addAll(master);
-//		allCourse.addAll(phd);
+		allCourse.addAll(phd);
 		allCourse.addAll(mit);
 		
 		FilteredList<Course> searchList = new FilteredList<>(allCourse);
@@ -115,19 +115,24 @@ public class CourseView {
         TableColumn<Course, String> colType   = new TableColumn<>("Degree Program");
         
         colCode.setCellValueFactory(new PropertyValueFactory<>("code"));
-        colCode.setMinWidth(50); colCode.setMaxWidth(50);
-        
-        colTitle.setCellValueFactory(new PropertyValueFactory<>("CName"));
-        colTitle.setMinWidth(100); colTitle.setMaxWidth(100);
-        
-        colUnit.setCellValueFactory(new PropertyValueFactory<>("units"));
-        colUnit.setMinWidth(30); colUnit.setMaxWidth(30);
-        
-        colDescrip.setCellValueFactory(new PropertyValueFactory<>("desc"));
-        colDescrip.setMinWidth(150); colDescrip.setMaxWidth(150);
-        
-        colType.setCellValueFactory(new PropertyValueFactory<>("type"));
-        colType.setMinWidth(30); colType.setMaxWidth(30);
+        // colCode.setMinWidth(50); colCode.setMaxWidth(50);
+		 colCode.setPrefWidth(120);
+		 
+		 colTitle.setCellValueFactory(new PropertyValueFactory<>("CName"));
+		 //colTitle.setMinWidth(100); colTitle.setMaxWidth(100);
+		 colTitle.setPrefWidth(250);
+		 
+		 colUnit.setCellValueFactory(new PropertyValueFactory<>("units"));
+		// colUnit.setMinWidth(30); colUnit.setMaxWidth(30);
+		 colUnit.setPrefWidth(60);
+		 
+		 colDescrip.setCellValueFactory(new PropertyValueFactory<>("desc"));
+		 //colDescrip.setMinWidth(150); colDescrip.setMaxWidth(150);
+		 colDescrip.setPrefWidth(500);
+		 
+		 colType.setCellValueFactory(new PropertyValueFactory<>("type"));
+		 //colType.setMinWidth(30); colType.setMaxWidth(30);
+		 colType.setPrefWidth(180);
         
         table.getColumns().addAll(colCode, colTitle, colUnit, colDescrip, colType);
        
@@ -136,7 +141,7 @@ public class CourseView {
 		courseFilter.getItems().addAll("All Degree Program", Course.BSCS, Course.MASTER, Course.PHD, Course.MIT);
 		courseFilter.setValue("All Degree Program");
 		courseFilter.getStyleClass().add("combo-box");
-		
+				
 		TextField searchBar = new TextField();
 		searchBar.setPromptText("Course Code");
 		searchBar.getStyleClass().add("login-textfields");
@@ -144,6 +149,9 @@ public class CourseView {
 			searchCourse(searchList, searchBar.getText(), courseFilter.getValue(), table);
 			});
 		
+		courseFilter.valueProperty().addListener((observable, oldValue, newValue) -> {
+		    searchCourse(searchList, searchBar.getText(), courseFilter.getValue(), table);
+		});
 		 
 		// =========== LAYOUT ===========
         HBox search = new HBox(10, searchBar, courseFilter);
@@ -188,3 +196,5 @@ public class CourseView {
 	}
 		
 }
+
+
