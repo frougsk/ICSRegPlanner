@@ -109,7 +109,7 @@ public class CourseView {
         
         // Sets the table columns
         TableColumn<Course, String> colCode   = new TableColumn<>("Course Code");
-        TableColumn<Course, String> colTitle      = new TableColumn<>("Course Title");
+        TableColumn<Course, String> colCName      = new TableColumn<>("Course Name");
         TableColumn<Course, String> colUnit  = new TableColumn<>("Units");
         TableColumn<Course, String> colDescrip = new TableColumn<>("Description");
         TableColumn<Course, String> colType   = new TableColumn<>("Degree Program");
@@ -118,9 +118,9 @@ public class CourseView {
         // colCode.setMinWidth(50); colCode.setMaxWidth(50);
 		 colCode.setPrefWidth(120);
 		 
-		 colTitle.setCellValueFactory(new PropertyValueFactory<>("CName"));
+		 colCName.setCellValueFactory(new PropertyValueFactory<>("CName"));
 		 //colTitle.setMinWidth(100); colTitle.setMaxWidth(100);
-		 colTitle.setPrefWidth(250);
+		 colCName.setPrefWidth(250);
 		 
 		 colUnit.setCellValueFactory(new PropertyValueFactory<>("units"));
 		// colUnit.setMinWidth(30); colUnit.setMaxWidth(30);
@@ -134,27 +134,36 @@ public class CourseView {
 		 //colType.setMinWidth(30); colType.setMaxWidth(30);
 		 colType.setPrefWidth(180);
         
-        table.getColumns().addAll(colCode, colTitle, colUnit, colDescrip, colType);
+        table.getColumns().addAll(colCode, colCName, colUnit, colDescrip, colType);
        
         // Search
 		ComboBox<String> courseFilter = new ComboBox<>();
 		courseFilter.getItems().addAll("All Degree Program", Course.BSCS, Course.MASTER, Course.PHD, Course.MIT);
 		courseFilter.setValue("All Degree Program");
 		courseFilter.getStyleClass().add("combo-box");
-				
-		TextField searchBar = new TextField();
-		searchBar.setPromptText("Course Code");
-		searchBar.getStyleClass().add("login-textfields");
-		searchBar.textProperty().addListener((observable, oldValue, newValue) -> {
-			searchCourse(searchList, searchBar.getText(), courseFilter.getValue(), table);
+		
+		TextField codeSearch = new TextField();
+		codeSearch.setPromptText("Course Code");
+		codeSearch.getStyleClass().add("login-textfields");
+		
+		TextField titleSearch = new TextField();
+		titleSearch.setPromptText("Course Name");
+		titleSearch.getStyleClass().add("login-textfields");
+		titleSearch.textProperty().addListener((observable, oldValue, newValue) -> {
+			searchCourse(searchList, codeSearch.getText(), titleSearch.getText(), courseFilter.getValue(), table);
+			});
+		
+		codeSearch.textProperty().addListener((observable, oldValue, newValue) -> {
+			searchCourse(searchList, codeSearch.getText(), titleSearch.getText(), courseFilter.getValue(), table);
 			});
 		
 		courseFilter.valueProperty().addListener((observable, oldValue, newValue) -> {
-		    searchCourse(searchList, searchBar.getText(), courseFilter.getValue(), table);
-		});
-		 
+			searchCourse(searchList, codeSearch.getText(), titleSearch.getText(), courseFilter.getValue(), table);
+			});
+		
+		
 		// =========== LAYOUT ===========
-        HBox search = new HBox(10, searchBar, courseFilter);
+        HBox search = new HBox(10, codeSearch, titleSearch, courseFilter);
         search.setAlignment(Pos.TOP_LEFT);
         
         VBox tableSearch = new VBox(search, table);
@@ -180,21 +189,20 @@ public class CourseView {
     }
 	
 	
-	static void searchCourse(FilteredList<Course> searchList, String searchText, String degProg, TableView<Course> table) {
+	static void searchCourse(FilteredList<Course> searchList, String code, String title, String degProg, TableView<Course> table) {
 		searchList.setPredicate(c -> {
-			String lower = searchText.toLowerCase();
-						
-			boolean degprogMatched = degProg.equals("All Degree Program") || c.getType().equals(degProg);
-			boolean searchMatched = searchText == null || searchText.isEmpty() ||
-					c.getCode().toLowerCase().contains(lower) || c.getCName().toLowerCase().contains(lower);
+			String lower = code.toLowerCase();
+			String lower2 = title.toLowerCase();
 			
-			if (!degprogMatched && !searchMatched) {
+			boolean degprogMatched = degProg.equals("All Degree Program") || c.getType().equals(degProg);
+			boolean codeMatched = code == null || code.isEmpty() || c.getCode().toLowerCase().contains(lower); 
+			boolean titleMatched = title == null || title.isEmpty()	|| c.getCName().toLowerCase().contains(lower2);
+			
+			if (!degprogMatched && !codeMatched && !titleMatched) {
 				table.setPlaceholder(new Label("No course found"));
 			} 
-			return degprogMatched && searchMatched;
+			return degprogMatched && codeMatched && titleMatched;
 		});
 	}
 		
 }
-
-
