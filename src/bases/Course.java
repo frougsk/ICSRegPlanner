@@ -29,3 +29,5 @@ public class Course {
 	public int getUnits() { return units; }
 	public String getDesc() { return description; }
 	public String getType() { return studentType; }
+	
+}
