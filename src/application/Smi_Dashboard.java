@@ -50,7 +50,7 @@ public class Smi_Dashboard {
 				
 		// =========== SIDE BAR ===========
 		VBox sidebar = new VBox(10);
-		sidebar.setPadding(new Insets(30,0,0,0));
+		sidebar.setPadding(new Insets(10,0,0,0));
 		sidebar.getStyleClass().add("sidebar");
 		sidebar.setTranslateX(-140);
 		
