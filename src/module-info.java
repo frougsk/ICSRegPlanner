@@ -1,5 +1,14 @@
 module ICSRegPlanner {
-	requires javafx.controls;
-	
-	opens application to javafx.graphics, javafx.fxml;
+    requires javafx.controls;
+    requires javafx.graphics;
+    requires javafx.base;
+    
+    opens application to javafx.graphics, javafx.base;
+    opens bases to javafx.base;
+    opens fileHandlers to javafx.base;
+    opens screens to javafx.base;
+    
+    exports application;
+    exports bases;
 }
+
