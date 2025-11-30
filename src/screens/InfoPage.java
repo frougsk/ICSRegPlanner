@@ -1,5 +1,6 @@
 package screens;
 
+import application.Fonts;
 // Package Imports
 import bases.Account;
 
@@ -12,6 +13,7 @@ import javafx.scene.control.Separator;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.Image;
 import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 
@@ -23,8 +25,9 @@ public class InfoPage {
     	// =========== INTRODUCTION ===========
 		Text hello = new Text("Hello, " + account.getFirstName().toUpperCase() + 
 				" " + account.getLastName().toUpperCase());
-		hello.getStyleClass().add("hello-style");
-		
+		hello.setFont(Fonts.loadDotemp(40));
+		hello.setFill(Color.web("#4E7711"));
+
 		Text introText = new Text("Welcome to the Scheduling & Management for the Institute of Computer Science!\r\n"
 				+ "This application helps you plan your classes for the First Semester of A.Y. 2025–2026 in an easy and organized way.\r\n"
 				+ "\r\n"
@@ -48,13 +51,14 @@ public class InfoPage {
 		intro.setPadding(new Insets(10, 100, 0, 100));
 		
 		// =========== ABOUT ===========
-		Text ab = new Text("ABOUT");
-		ab.getStyleClass().add("hello-style");
+		Text ab = new Text("About smiCS");
+		ab.setFont(Fonts.loadDotemp(40));
+		ab.setFill(Color.web("#4E7711"));
 		
 		// Paragraph 1
 		Text abText1 = new Text("SMICS is designed to make your course planning simple, convenient, and " + 
 				"easy. SMICS have three (3) tabs — Dashboard, Planner, and Courses. In this section, you will" + 
-				"learn the function of each tab to guide you for a better navigating experience in this portal. ");
+				" learn the function of each tab to guide you for a better navigating experience in this portal. ");
 		
 		TextFlow aboutPara1 = new TextFlow(abText1);
 		aboutPara1.setPadding(new Insets(20, 20, 5, 20));
@@ -108,16 +112,13 @@ public class InfoPage {
 		about.setPadding(new Insets(10, 100, 0, 100));
 		
 		// =========== CREDITS ===========
-		Text cred = new Text("CREDITS");
-		cred.getStyleClass().add("hello-style");
+		Text cred = new Text("Behind the Scenes");
+		cred.setFont(Fonts.loadDotemp(40));
+		cred.setFill(Color.web("#4E7711"));
 		
 		// Paragraph 1 - cred
 		Text credText1 = new Text("This Portal is created by the group JELlyAce, students of the CMSC 22 " + 
-				"UV-5L of the University of the Philippines Los Baños (UPLB). They are Jodi Antonette Calleja, " + 
-				"Maria Eliza Gevaña, and Lian Francine Hidalgo." + 
-				"nec metus bibendum egestas. Iaculis massa nisl malesuada lacinia integer nunc posuere. " + 
-				"Ut hendrerit semper vel class aptent taciti sociosqu. Ad litora torquent per conubia " +
-				"nostra inceptos himenaeos.");
+				"UV-5L of the University of the Philippines Los Baños (UPLB). ");
 		
 		TextFlow credPara1 = new TextFlow(credText1);
 		credPara1.setPadding(new Insets(20, 20, 5, 20));
@@ -126,7 +127,8 @@ public class InfoPage {
 		
 		// References
 		Text credRef = new Text("References");
-		credRef.getStyleClass().add("hello-style");
+		credRef.setFont(Fonts.loadDotemp(40));
+		credRef.setFill(Color.web("#4E7711"));
 		
 		TextFlow ref = new TextFlow(credRef);
 		ref.setPadding(new Insets(20, 20, 5, 20));
