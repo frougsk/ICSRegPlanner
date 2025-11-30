@@ -53,10 +53,11 @@ public class Account {
 
 	//Converts to file format
 	public String toFile() {
-		return String.join(", ", emailAddress, firstName, middleName, lastName, program, password);
+		return String.join(",", emailAddress, firstName, middleName, lastName, program, password);
 	}
 	
 }
+
 
 
 
