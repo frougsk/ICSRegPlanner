@@ -165,3 +165,17 @@
 	-fx-text-alignment: justify;
 	-fx-text-fill: #486F0E; 
 }
+
+.course-table .column-header-background {
+    -fx-background-color: #417940;
+}
+
+.course-table .column-header .label {
+    -fx-font-size: 15px;
+    -fx-font-weight: bold;
+}
+
+.details-style{
+	-fx-font-weight: bold;
+	-fx-font-family: "Dotempt 8bit";
+}
