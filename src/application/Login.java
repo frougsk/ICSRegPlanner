@@ -35,28 +35,29 @@ public class Login {
 		
 		HBox topBar = new HBox(brand);
 		topBar.setAlignment(Pos.CENTER_LEFT);
-		topBar.setPadding(new Insets(0,0,0,20));
+		topBar.setPadding(new Insets(0,0,0,50));
 		topBar.setPrefHeight(50);
 		topBar.setStyle("-fx-background-color: #eaefdb;");
 		
 		// =========== LOGIN BOX ===========
 		ImageView smiski = new ImageView(Login.class.getResource("/assets/icon.png").toExternalForm());
 		smiski.setPreserveRatio(true); 
-		smiski.setFitWidth(80);
+		smiski.setFitWidth(100);
 		
 		javafx.scene.effect.DropShadow dropShadow = new javafx.scene.effect.DropShadow();
-		dropShadow.setColor(Color.rgb(0, 0, 0, 0.3));
-		dropShadow.setRadius(10);
-		dropShadow.setOffsetX(3); 
-		dropShadow.setOffsetY(3);
+		dropShadow.setColor(Color.rgb(166, 190, 93, 0.3));
+		dropShadow.setRadius(40);
+		dropShadow.setOffsetX(0); 
+		dropShadow.setOffsetY(0);
 		smiski.setEffect(dropShadow);
 		
 		Text login = new Text("Log In");
 		login.setFont(Fonts.loadDotemp(55));
 		login.setFill(Color.web("#a6be5d"));
+		login.setStyle("-fx-font-weight: bold;");
         
 		Region spacer = new Region();
-		spacer.setPrefHeight(20);
+		spacer.setPrefHeight(18);
 		
 		TextField email = new TextField();
         email.setPromptText("Email Address");
@@ -92,7 +93,7 @@ public class Login {
         Image hover = new Image(Login.class.getResource("/assets/Hovered_sign.png").toExternalForm());
         
         ImageView buttonIcon = new ImageView(unhover);
-        buttonIcon.setFitWidth(50); 
+        buttonIcon.setFitWidth(45); 
 		buttonIcon.setFitHeight(50);
         
         Button log = new Button("Log In",buttonIcon);
@@ -153,11 +154,28 @@ public class Login {
         VBox smiskiAndTitle = new VBox(0, smiski, login);
         smiskiAndTitle.setAlignment(Pos.CENTER);
 		
-		VBox signin = new VBox(5, smiskiAndTitle,spacer,email,passbox,bottomE);
-		signin.setTranslateX(150);
-		signin.setAlignment(Pos.TOP_CENTER);
-		signin.setPadding(new Insets(50,40,0,40));
-		signin.getStyleClass().add("login-box");
+        VBox signin = new VBox(5, smiskiAndTitle,spacer,email,passbox,bottomE);
+        signin.setAlignment(Pos.TOP_CENTER);
+        signin.setPadding(new Insets(50,40,0,40));
+        signin.getStyleClass().add("login-box");
+
+        Image hangingImg = new Image(Login.class.getResource("/assets/Hang-unscreen.gif").toExternalForm());
+        Image hoverImg   = new Image(Login.class.getResource("/assets/Hng2-unscreen.gif").toExternalForm());
+
+        ImageView smiskiView = new ImageView(hangingImg);
+        smiskiView.setPreserveRatio(true);
+        smiskiView.setFitWidth(300);
+        smiskiView.setTranslateX(330);
+        smiskiView.setTranslateY(-180);
+
+        // swap on hover
+        smiskiView.setOnMouseEntered(e -> smiskiView.setImage(hoverImg));
+        smiskiView.setOnMouseExited(e -> smiskiView.setImage(hangingImg));
+
+        // Use smiskiView in your layout
+        StackPane signinWithHanging = new StackPane(signin, smiskiView);
+        signinWithHanging.setAlignment(Pos.CENTER_LEFT);
+        signinWithHanging.setTranslateX(150);
 		
 		// =========== LOGO ===========
 		ImageView logo = new ImageView(Login.class.getResource("/assets/SMICS_logo.png").toExternalForm());
@@ -173,7 +191,7 @@ public class Login {
 		welcome.setPadding(new Insets(50,40,0,40));
 		
 		// =========== LAYOUT ===========
-		StackPane signinLeft = new StackPane(signin);
+		StackPane signinLeft = new StackPane(signinWithHanging);
 		signinLeft.setPadding(new Insets(90, 0, 90, 10));
 		
 		StackPane logoRight = new StackPane(welcome);
