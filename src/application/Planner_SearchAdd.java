@@ -33,7 +33,7 @@ public class Planner_SearchAdd {
 	private void searchAdd() {
 		//=========== LOAD OFFERED COURSES  ===========
 		OfferingLoader loader = new OfferingLoader();
-		YearSet ay = loader.getOfferings(Paths.get("courses/course_offerings.csv"));
+		YearSet ay = loader.getOfferings(Paths.get("data/course_offerings.csv"));
 		ObservableList<Offering> offerings = FXCollections.observableArrayList(ay.getOfferings());
 		
 		FilteredList<Offering> searchList = new FilteredList<>(offerings, s -> true);
@@ -128,3 +128,4 @@ public class Planner_SearchAdd {
 		});
 	}
 }
+
