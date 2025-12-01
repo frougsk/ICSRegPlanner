@@ -53,8 +53,9 @@ public class CoursePage {
 		// Table View
 		TableView<Course> table = new TableView<>(searchList);
         table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
-        table.getStyleClass().add("course-table");
         
+        table.setPrefHeight(1000);
+ 
         // Sets the table columns
         TableColumn<Course, String> colCode   = new TableColumn<>("Course Code");
         TableColumn<Course, String> colCName      = new TableColumn<>("Course Name");
@@ -64,23 +65,23 @@ public class CoursePage {
         
         colCode.setCellValueFactory(new PropertyValueFactory<>("code"));
         // colCode.setMinWidth(50); colCode.setMaxWidth(50);
-		 colCode.setPrefWidth(120);
+		 colCode.setPrefWidth(180);
 		 
 		 colCName.setCellValueFactory(new PropertyValueFactory<>("CName"));
 		 //colTitle.setMinWidth(100); colTitle.setMaxWidth(100);
-		 colCName.setPrefWidth(250);
+		 colCName.setPrefWidth(400);
 		 
 		 colUnit.setCellValueFactory(new PropertyValueFactory<>("units"));
 		// colUnit.setMinWidth(30); colUnit.setMaxWidth(30);
-		 colUnit.setPrefWidth(60);
+		 colUnit.setPrefWidth(120);
 		 
 		 colDescrip.setCellValueFactory(new PropertyValueFactory<>("desc"));
 		 //colDescrip.setMinWidth(150); colDescrip.setMaxWidth(150);
-		 colDescrip.setPrefWidth(500);
+		 colDescrip.setPrefWidth(700);
 		 
 		 colType.setCellValueFactory(new PropertyValueFactory<>("type"));
 		 //colType.setMinWidth(30); colType.setMaxWidth(30);
-		 colType.setPrefWidth(180);
+		 colType.setPrefWidth(250);
         
         table.getColumns().addAll(colCode, colCName, colUnit, colDescrip, colType);
        
@@ -89,14 +90,15 @@ public class CoursePage {
 		courseFilter.getItems().addAll("All Degree Program", Course.BSCS, Course.MASTER, Course.PHD, Course.MIT);
 		courseFilter.setValue("All Degree Program");
 		courseFilter.getStyleClass().add("combo-box");
+		courseFilter.setStyle("-fx-border-color: #BDD280; -fx-border-radius: 24px; -fx-alignment: center; -fx-border-width: 7px;");
 		
 		TextField codeSearch = new TextField();
 		codeSearch.setPromptText("Course Code");
-		codeSearch.getStyleClass().add("login-textfields");
+		codeSearch.getStyleClass().add("course-textfields");
 		
 		TextField titleSearch = new TextField();
 		titleSearch.setPromptText("Course Name");
-		titleSearch.getStyleClass().add("login-textfields");
+		titleSearch.getStyleClass().add("course-textfields");
 		titleSearch.textProperty().addListener((observable, oldValue, newValue) -> {
 			searchCourse(searchList, codeSearch.getText(), titleSearch.getText(), courseFilter.getValue(), table);
 			});
@@ -111,13 +113,12 @@ public class CoursePage {
 		
 		// =========== Layout ===========
 		HBox search = new HBox(10, codeSearch, titleSearch, courseFilter);
-        search.setAlignment(Pos.TOP_LEFT);
+        search.setAlignment(Pos.TOP_CENTER);
         
         layout = new VBox(search, table);
         layout.setAlignment(Pos.TOP_CENTER);
-        layout.getStyleClass().add("login-box");
-        layout.setPadding(new Insets(20,140,20,100));
-        layout.setStyle("-fx-background-color: #f7f8f7;");
+        layout.setPadding(new Insets(20,40,20,40));
+        layout.setStyle("-fx-background-color: white;");
         layout.setSpacing(25);
         
         root = new StackPane(layout);
