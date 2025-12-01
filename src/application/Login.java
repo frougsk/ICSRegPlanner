@@ -31,11 +31,18 @@ public class Login {
 		// =========== TOP BAR ===========
 		ImageView brand = new ImageView(Login.class.getResource("/assets/brand.png").toExternalForm());
 		double ogWidth = brand.getImage().getWidth();
-		brand.setPreserveRatio(true); brand.setFitWidth(ogWidth * 0.04);
+		brand.setPreserveRatio(true); brand.setFitWidth(ogWidth * 0.05);
 		
-		HBox topBar = new HBox(brand);
+		// Make menu button
+		ImageView borgir = new ImageView(Login.class.getResource("/assets/menubutton.png").toExternalForm());
+		borgir.setPreserveRatio(true); borgir.setFitWidth(ogWidth * 0.02);
+		Button menuButton = new Button();
+		menuButton.setGraphic(borgir);
+		menuButton.setStyle("-fx-background-color: transparent;");
+		
+		HBox topBar = new HBox(20,menuButton,brand);
 		topBar.setAlignment(Pos.CENTER_LEFT);
-		topBar.setPadding(new Insets(0,0,0,50));
+		topBar.setPadding(new Insets(0, 0, 0, 20));
 		topBar.setPrefHeight(50);
 		topBar.setStyle("-fx-background-color: #eaefdb;");
 		
@@ -54,7 +61,7 @@ public class Login {
 		Text login = new Text("Log In");
 		login.setFont(Fonts.loadDotemp(55));
 		login.setFill(Color.web("#a6be5d"));
-		login.setStyle("-fx-font-weight: bold;");
+		login.setStyle("-fx-effect: dropshadow( one-pass-box , #a6be5d , 5, 0, 0 , 0 );");
         
 		Region spacer = new Region();
 		spacer.setPrefHeight(18);
@@ -98,7 +105,7 @@ public class Login {
         
         Button log = new Button("Log In",buttonIcon);
         log.setTextFill(Color.web("#FFFFFF"));
-		log.setStyle("-fx-cursor: hand; -fx-padding:0;");
+		log.setStyle("-fx-cursor: hand; -fx-padding:0; -fx-effect: dropshadow( one-pass-box , #FFFFFF, 3, 0, 0 , 0 );");
         log.setContentDisplay(ContentDisplay.RIGHT);
 
 		 // Hover effect
@@ -129,7 +136,7 @@ public class Login {
  				if(!found) {
 // 					NotAuthenticated err = new NotAuthenticated();
 // 					err.start(logStage);
-					new Alert(Alert.AlertType.ERROR,"Account not found or Password Incorect").show();
+					Notifier.error();
  				}
  			}
  		});
@@ -159,14 +166,15 @@ public class Login {
         signin.setPadding(new Insets(50,40,0,40));
         signin.getStyleClass().add("login-box");
 
-        Image hangingImg = new Image(Login.class.getResource("/assets/Hang-unscreen.gif").toExternalForm());
-        Image hoverImg   = new Image(Login.class.getResource("/assets/Hng2-unscreen.gif").toExternalForm());
+        Image hangingImg = new Image(Login.class.getResource("/assets/Hang.gif").toExternalForm());
+        Image hoverImg   = new Image(Login.class.getResource("/assets/Hng2.gif").toExternalForm());
 
         ImageView smiskiView = new ImageView(hangingImg);
         smiskiView.setPreserveRatio(true);
-        smiskiView.setFitWidth(300);
+        smiskiView.setFitWidth(290);
         smiskiView.setTranslateX(330);
-        smiskiView.setTranslateY(-180);
+        smiskiView.setTranslateY(-200);
+        smiskiView.setStyle("-fx-cursor: hand;");
 
         // swap on hover
         smiskiView.setOnMouseEntered(e -> smiskiView.setImage(hoverImg));
@@ -178,38 +186,33 @@ public class Login {
         signinWithHanging.setTranslateX(150);
 		
 		// =========== LOGO ===========
-		ImageView logo = new ImageView(Login.class.getResource("/assets/SMICS_logo.png").toExternalForm());
+		ImageView logo = new ImageView(Login.class.getResource("/assets/LandingPage.gif").toExternalForm());
 		double logoWidth = logo.getImage().getWidth();
-		logo.setPreserveRatio(true); logo.setFitWidth(logoWidth * 0.15);
+		logo.setPreserveRatio(true); logo.setFitWidth(logoWidth * 0.7);
 		
-		Text motto = new Text("Your glowing registration assistant");
-		motto.getStyleClass().add("tagline-style");
-		motto.setFill(Color.web("#9ba381"));
-		
-		VBox welcome = new VBox(10,logo,motto);
+		VBox welcome = new VBox(logo);
 		welcome.setAlignment(Pos.CENTER);
-		welcome.setPadding(new Insets(50,40,0,40));
+		welcome.setPadding(new Insets(10,50,0,50));
 		
 		// =========== LAYOUT ===========
-		StackPane signinLeft = new StackPane(signinWithHanging);
-		signinLeft.setPadding(new Insets(90, 0, 90, 10));
-		
-		StackPane logoRight = new StackPane(welcome);
-		logoRight.setPadding(new Insets(10,100,120,0));
-		
+		HBox centerContent = new HBox(210, signinWithHanging, welcome);
+		centerContent.setAlignment(Pos.CENTER);
+		centerContent.setPadding(new Insets(40, 50, 40, 50));
+
+		StackPane centerArea = new StackPane(centerContent);
+
 		BorderPane broot = new BorderPane();
 		broot.setPrefSize(width, height);
 		broot.setTop(topBar);
-		broot.setLeft(signinLeft);
-		broot.setRight(logoRight);
-		
+		broot.setCenter(centerArea);
+
 		StackPane root = new StackPane(broot);
 		root.setPrefSize(width, height);
 		root.setMinSize(width, height);
 		root.setMaxSize(width, height);
-        root.getStyleClass().add("welcome-bg");
-        
-        root.setOnMousePressed(e -> root.requestFocus());
+		root.getStyleClass().add("welcome-bg");
+
+		root.setOnMousePressed(e -> root.requestFocus());
         
 		Scene scene = new Scene(root, width, height);
         scene.getStylesheets().add(Login.class.getResource("application.css").toExternalForm());
@@ -246,6 +249,7 @@ public class Login {
 		root.setMinSize(width, height);
 		root.setMaxSize(width, height);
         root.getStyleClass().add("welcome-bg");
+        root.setStyle("-fx-cursor: wait;");
         
         PauseTransition pause = new PauseTransition(Duration.seconds(1.5));
         pause.setOnFinished(ev -> {
