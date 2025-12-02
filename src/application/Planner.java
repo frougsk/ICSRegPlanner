@@ -30,7 +30,7 @@ import java.util.stream.Collectors;
 
 public class Planner {
 	
-	private static ArrayList<Offering> allOfferings = new ArrayList<>();
+	//private static ArrayList<Offering> allOfferings = new ArrayList<>();
 	private static final Path BASKET_CSV = Path.of("accounts_data", "basket.csv");
 	
 	public static Scene makeCoursePlan(double width, double height, Stage mainStage, Account account) {
@@ -86,37 +86,31 @@ public class Planner {
      	});
 		
 		
-		// =========== ADD TO BASKET ===========
-
-		// =========== BASKET ===========
 		// =========== PLANNER TAB ===========
 		Planner_Sched top = new Planner_Sched(account);
 		Planner_BasketView middle = new Planner_BasketView(account);
-		Planner_SearchAdd bottom = new Planner_SearchAdd(account);
+		Planner_SearchAdd bottom = new Planner_SearchAdd(account, top);
 		
 		bottom.setAddToBasket(o-> {
-			boolean success = AddCourse.addCourse(account, o);
+			boolean success = AddCourse.addCourse(account, o, top);
 			
-			if(!success) {
-				top.error("Cannot add course: " + o.getCode());
-				return;
+			if (success) {
+				middle.refresh(account);
+				top.updateSched(account);
+				top.success("[SUCCESS] Successfully added " + o.getCode());
 			}
-			top.updateSched(account);
-			middle.refresh(account);
-			
-			top.success("Successfully added " + o.getCode());
 		});
 		
 		middle.setRemoveToBasket(o -> {
-			account.removeFromBasket(o.getCode());
+			account.removeFromBasket(o);
 			middle.refresh(account);
 			top.updateSched(account);
-			top.success("Successfully removed " + o.getCode());
+			top.success("[SUCCESS] Successfully removed " + o.getCode());
 			
 		});
 		
 		// =========== LAYOUT ===========
-		VBox content = new VBox(15, top.getNode(), middle.getNode(), bottom.getNode());
+		bVBox content = new VBox(15, top.getNode(), middle.getNode(), bottom.getNode());
 		content.setAlignment(Pos.CENTER);	
 		content.setSpacing(25);
 		
