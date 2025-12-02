@@ -28,7 +28,7 @@ public class Planner_BasketView {
         
 		TableColumn<Offering, String> colCode   = new TableColumn<>("Course Code");
         TableColumn<Offering, String> colTitle      = new TableColumn<>("Course Title");
-        TableColumn<Offering, String> colUnit  = new TableColumn<>("Units");
+        TableColumn<Offering, Integer> colUnit  = new TableColumn<>("Units");
         TableColumn<Offering, String> colSec = new TableColumn<>("Section");
         TableColumn<Offering, String> colTime   = new TableColumn<>("Times");
         TableColumn<Offering, String> colDay   = new TableColumn<>("Days");
@@ -61,16 +61,17 @@ public class Planner_BasketView {
         basketLbl.setAlignment(Pos.TOP_LEFT);
         
         VBox basket = new VBox(10, basketLbl, table, del);
-        //basket.setAlignment(Pos.CENTER);
+        basket.setAlignment(Pos.TOP_CENTER);
+        basket.setMinHeight(500);
         basket.setPadding(new Insets(10, 80, 10, 80));
         basket.getStyleClass().add("login-box");
         
        root.getChildren().add(basket);
    
         
-        refresh(acc);
-        
+        refresh(acc); 
 	}
+	
 	public Node getNode() {return root; }
 
     public void setRemoveToBasket(Consumer<Offering> handler) {
