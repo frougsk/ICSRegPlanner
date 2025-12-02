@@ -10,147 +10,119 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
-import javafx.scene.text.Text;
 
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.function.Consumer;
 
-
-public class Planner_Sched {
+public class Planner_SearchAdd {
 	
-	private StackPane root = new StackPane();
-	private GridPane schedGrid = new GridPane();
-	private final Map<String, StackPane> dayTime = new HashMap<>();
-	private Text warning = new Text("-- All Clear --");
+	private StackPane root = new StackPane() ;
+	private Consumer<Offering> addToBasket;
+	private FilteredList<Offering> searchList;
 	
-	
-	public Planner_Sched(Account acc) {
-		// =========== WARNING PANEL ===========
-		Text warningLbl = new Text("Warning Panel");
-		warningLbl.getStyleClass().add("hello-style");
-
-		//=========== SCHEDULE GRID  ===========
-		Text plan = new Text("Course Plan");
-		plan.getStyleClass().add("hello-style");
-		
-		String[] days = {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
-		
-		for (int d = 0; d < days.length; d++) {
-			Label dayLbl = new Label(days[d]);
-			dayLbl.setAlignment(Pos.CENTER);
-			//dayLbl.getStyleClass().add("hello-style");
-			schedGrid.add(dayLbl, d+1, 0);
-		}
-		
-		int row =1;
-		for (int h = 7; h <= 19; h++) {
-			Label hour = new Label(h + ":00");
-			hour.setAlignment(Pos.CENTER);
-			schedGrid.add(hour, 0, row);
-			row++;
-		}
-		
-		// Grid Layout
-		for (int d = 0; d < days.length; d++) {
-			for (int h = 7; h <= 19; h++) {
-				StackPane cell = new StackPane();
-				cell.setMinSize(100, 20);
-				//cell.getStyleClass().add("course-table");
-				schedGrid.add(cell,  d+1, row);
-				String key = days[d] + "-" + (h*60);
-				dayTime.put(key, cell);
-			}
-		}
-		schedGrid.setGridLinesVisible(true);
-		
-		
-		// =========== LAYOUT ===========
-		schedGrid.setHgap(5);
-		schedGrid.setVgap(5);
-		schedGrid.setPadding(new Insets(10));
-					
-		VBox sched = new VBox(plan, schedGrid);
-		sched.setAlignment(Pos.CENTER);
+	public Planner_SearchAdd(Account acc, Planner_Sched top) { 
+		//=========== LOAD OFFERED COURSES  ===========
+		OfferingLoader loader = new OfferingLoader();
+		YearSet ay = loader.getOfferings(Paths.get("courses/course_offerings.csv"));
+		ObservableList<Offering> offerings = FXCollections.observableArrayList(ay.getOfferings());
 				
-		HBox panel = new HBox(50, sched, warningLbl);
-		panel.setAlignment(Pos.TOP_LEFT);
-		panel.setMaxWidth(Double.MAX_VALUE);
-		HBox.setHgrow(plan, Priority.ALWAYS);
-		HBox.setHgrow(warningLbl, Priority.ALWAYS);
-		panel.setPadding(new Insets(10, 75, 10, 75));
-		panel.getStyleClass().add("login-box");
-	    	   
-	    root.getChildren().add(panel);
+		searchList = new FilteredList<>(offerings, s -> true);
 		
+		
+		//=========== TABLEVIEW  ===========
+		TableView<Offering> table = new TableView<>(searchList);
+        table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        table.getStyleClass().add("course-table");
+        
+		TableColumn<Offering, String> colCode   = new TableColumn<>("Course Code");
+        TableColumn<Offering, String> colTitle      = new TableColumn<>("Course Title");
+        TableColumn<Offering, Integer> colUnit  = new TableColumn<>("Units");
+        TableColumn<Offering, String> colSec = new TableColumn<>("Section");
+        TableColumn<Offering, String> colTime   = new TableColumn<>("Times");
+        TableColumn<Offering, String> colDay   = new TableColumn<>("Days");
+        TableColumn<Offering, String> colRoom   = new TableColumn<>("Rooms");
+        
+        colCode.setCellValueFactory(new PropertyValueFactory<>("code"));
+        colTitle.setCellValueFactory(new PropertyValueFactory<>("title"));
+        colUnit.setCellValueFactory(new PropertyValueFactory<>("units"));
+        colSec.setCellValueFactory(new PropertyValueFactory<>("section"));
+        colTime.setCellValueFactory(new PropertyValueFactory<>("time"));
+        colDay.setCellValueFactory(new PropertyValueFactory<>("day"));
+        colRoom.setCellValueFactory(new PropertyValueFactory<>("room"));
+
+        table.getColumns().addAll(colCode, colTitle, colUnit, colSec, colTime, colDay, colRoom);
+        
+        //=========== SEARCH COURSE  ===========
+        TextField codeSearch = new TextField();
+		codeSearch.setPromptText("Course Code");
+		codeSearch.getStyleClass().add("login-textfields");
+		
+		TextField titleSearch = new TextField();
+		titleSearch.setPromptText("Course Name");
+		titleSearch.getStyleClass().add("login-textfields");
+		titleSearch.textProperty().addListener((observable, oldValue, newValue) -> {
+			searchCourse(searchList, codeSearch.getText(), titleSearch.getText(), table);
+			});
+		
+		codeSearch.textProperty().addListener((observable, oldValue, newValue) -> {
+			searchCourse(searchList, codeSearch.getText(), titleSearch.getText(), table);
+			});
+		
+		       
+        
+        //=========== ADD COURSE  ===========       
+        Button add = new Button("Add to Basket");
+        add.setOnMouseClicked(e -> {
+        	Offering selected = table.getSelectionModel().getSelectedItem();
+        	if(selected != null && addToBasket != null) {
+        		addToBasket.accept(selected);
+        	} else if (selected == null) {
+        		top.error("[ERROR] No course are selected");
+        	}
+        });   
+        
+        
+        // =========== LAYOUT ===========
+        HBox search = new HBox(10, codeSearch, titleSearch, add);
+        search.setAlignment(Pos.TOP_LEFT);
+        
+        Label seachLbl = new Label("COURSE SEARCH");
+        seachLbl.getStyleClass().add("hello-style");
+        seachLbl.setAlignment(Pos.TOP_LEFT);
+        
+        VBox searchAdd = new VBox(10, seachLbl, search, table);
+        searchAdd.setAlignment(Pos.CENTER);
+        searchAdd.setPadding(new Insets(10, 80, 10, 80));
+        searchAdd.setMinHeight(575);
+        searchAdd.getStyleClass().add("login-box");
+        
+        root = new StackPane(searchAdd);
+        }
 	    
+    public Node getNode() {return root; }
+    
+    public void setAddToBasket(Consumer<Offering> handler) {
+    	this.addToBasket = handler;
+    }
+    
+    // For Search Function
+	static void searchCourse(FilteredList<Offering> searchList, String code, String title, TableView<Offering> table) {
+		searchList.setPredicate(o -> {
+			String lower = code.toLowerCase();
+			String lower2 = title.toLowerCase();
+			
+			boolean codeMatched = code == null || code.isEmpty() || o.getCode().toLowerCase().contains(lower); 
+			boolean titleMatched = title == null || title.isEmpty()	|| o.getTitle().toLowerCase().contains(lower2);
+			
+			if (!codeMatched && !titleMatched) {
+				table.setPlaceholder(new Label("No course found"));
+			} 
+			return codeMatched && titleMatched;
+		});
 	}
-	public Node getNode() {return root; }
-	
-	
-	public void error(String msg) {
-		warning.setText(msg);
-		warning.setFill(Color.DARKRED);
-	}
-	
-	public void success(String msg) {
-		warning.setText(msg);
-	}
-	
-	
-	// =========== GRID UPDATE ===========
-	public void updateSched(Account a) {
-		//schedGrid.getChildren().removeIf(node -> node.getStyle() != null);
-		
-		// Clears the schedule on the grid
-		for (var node : schedGrid.getChildren()) {
-			Integer col = GridPane.getColumnIndex(node);
-			Integer row = GridPane.getRowIndex(node);
-			if(col != null && col > 0 && row != null && row > 0) {
-				if(node instanceof StackPane) {
-					StackPane cell = (StackPane) node;
-					cell.getChildren().clear();
-				}
-			}
-		}
-		
-		LinkedHashMap<String, Offering> basket = a.getBasket();
-		for(Map.Entry<String, Offering> e: basket.entrySet()) {
-			Offering o = e.getValue();
-			placeOffering(o);
-		}
-	}
-		
-	
-	private void placeOffering(Offering o) {
-		if (o.getDay() == null || o.getTime() == null) return;
-		
-		int col = switch(o.getDay().trim().toLowerCase()) {
-		case "mon" -> 1;
-		case "tues" -> 2;
-		case "wed" -> 3;
-		case "thurs" -> 4;
-		case "fri" -> 5;
-		case "sat" -> 6;
-		default -> -1;
-		};
-		
-		if (col == -1) return;
-		
-		int startH = Integer.parseInt(o.getTime().split("-")[0].split(":")[0]);
-		int row = (startH - 7) + 1;
-		
-		Label blockLbl = new Label(o.getCode());
-		blockLbl.setStyle("-fx-background-color: green; -fx-padding: 3;");
-		
-		schedGrid.add(blockLbl, col, row);
-	}
-	
 	
 	
 }
