@@ -44,7 +44,7 @@ public class PlannerPage {
 		});
 		
 		middle.setRemoveToBasket(o -> {
-			account.removeFromBasket(o.getCode().toString());					// MADE METHOD COMPATIBLE W/ ARGUMENT
+			account.removeFromBasket(o.getCode() + "-" + o.getSection());
 			middle.refresh(account);
 			top.updateSched(account);
 			top.success("[SUCCESS] Successfully removed " + o.getCode());
