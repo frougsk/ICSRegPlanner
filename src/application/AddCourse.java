@@ -12,22 +12,14 @@ public class AddCourse {
     	top.setWarning(null);
     	String newCode = newCourse.getCode().trim().toUpperCase();
         String newSection = newCourse.getSection().trim().toUpperCase();
-        
-        for (Offering existing: account.getBasket().values()) {
-        	// Checks for exact duplicate of course and section
-        	if (existing.getCode().equalsIgnoreCase(newCourse.getCode()) &&
-        			existing.getSection().equalsIgnoreCase(newCourse.getSection())) {
-				if (true) {
-        		
-        		// Check if possible duplicate course (except CMSC 290 and CMSC 291
-	            /**if (!newCourse.getCode().equalsIgnoreCase("CMSC 290") &&
-	                !newCourse.getCode().equalsIgnoreCase("CMSC 291")) {**/
-	            		            	
-					top.error("[ERROR] " + newCourse.getCode() + " " + newCourse.getSection() + " is already in your basket");
-	                return false;
-	            }
-	    	}
-    	}       
+
+		// No duplicate course
+        for (Offering existing : account.getBasket().values()) {
+            if (existing.getCode() != null && existing.getCode().equalsIgnoreCase(newCode)) {
+                top.error("[ERROR] " + newCourse.getCode() + " is already in your basket. Remove the existing course before adding a new section.");
+                return false;
+            }
+        }     
 
         List<Offering> withSameCode = new ArrayList<>();
         for (Offering existing : account.getBasket().values()) {
@@ -118,4 +110,5 @@ public class AddCourse {
         return hour * 60 + min;
     }
 }
+
 
