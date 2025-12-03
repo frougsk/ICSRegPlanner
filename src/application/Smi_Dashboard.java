@@ -2,6 +2,7 @@ package application;
 
 //Package Imports
 import bases.Account;
+import screens.*;
 
 // JavaFX Imports
 import javafx.animation.TranslateTransition;
@@ -25,8 +26,6 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-import screens.CoursePage;
-import screens.InfoPage;
 
 public class Smi_Dashboard {
 	public static Scene createDash(double width, double height, Stage mainStage, Account account) {
@@ -90,6 +89,7 @@ public class Smi_Dashboard {
         
         // Link pages
         InfoPage info = new InfoPage();
+        PlannerPage plan = new PlannerPage();
         CoursePage courses = new CoursePage();
         
         // Show dash page by default
@@ -97,6 +97,7 @@ public class Smi_Dashboard {
         
         // Button actions
         dash.setOnAction(e -> showArea.getChildren().setAll(info.showInfo(width, height, account)));
+        planner.setOnAction(e -> showArea.getChildren().setAll(plan.showPlanner(width, height, account)));
         course.setOnAction(e -> showArea.getChildren().setAll(courses.showCourse(width, height)));
 
         Scene scene = new Scene(root, width, height);
