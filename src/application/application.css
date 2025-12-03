@@ -132,6 +132,7 @@
 }
 
 .create-button{
+	-fx-text-fill: white;
 	-fx-pref-width: 100px;
     -fx-pref-height: 50px;
     -fx-background-color: #a6be5d;
@@ -144,6 +145,25 @@
 
 .create-button:hover{
     -fx-background-color: #E5E8C9;
+    -fx-text-fill: #a6be5d;
+}
+
+.back-button{
+	-fx-text-fill: #a6be5d;
+	-fx-pref-width: 100px;
+    -fx-pref-height: 50px;
+    -fx-background-color: #E5E8C9;
+    -fx-border-color: transparent;
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+    -fx-font-family: "Dotemp 8bit";
+    -fx-font-size: 18px;
+    -fx-effect: dropshadow(gaussian, #E7EABF, 20, 0.3, 0, 0); 
+}
+
+.back-button:hover{
+    -fx-background-color:  #a6be5d;
+    -fx-text-fill: white;
 }
 
 .success-style{
