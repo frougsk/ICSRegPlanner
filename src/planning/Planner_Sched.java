@@ -200,16 +200,22 @@ public class Planner_Sched {
 	    dayStr = dayStr.trim().toUpperCase();
 
 	    // Ordered abbreviations (longest first)
-	    List<String> abbrOrder = List.of("TH", "M", "T", "W", "F", "S");
+	    List<String> abbrOrder = List.of("THURS", "TH", "MON", "TUES", "WED", "FRI", "SAT", "M", "T", "W", "F", "S");
 
 	    // Map to full day names
-	    Map<String, String> dayMap = Map.of(
-	        "TH", "thurs",
-	        "M", "mon",
-	        "T", "tues",
-	        "W", "wed",
-	        "F", "fri",
-	        "S", "sat"
+	    Map<String, String> dayMap = Map.ofEntries(
+	            Map.entry("THURS", "thurs"),
+	            Map.entry("TH", "thurs"),
+	            Map.entry("MON", "mon"),
+	            Map.entry("TUES", "tues"),
+	            Map.entry("WED", "wed"),
+	            Map.entry("FRI", "fri"),
+	            Map.entry("SAT", "sat"),
+	            Map.entry("M", "mon"),
+	            Map.entry("T", "tues"),
+	            Map.entry("W", "wed"),
+	            Map.entry("F", "fri"),
+	            Map.entry("S", "sat")
 	    );
 
 	    int i = 0;
@@ -223,7 +229,7 @@ public class Planner_Sched {
 	                break;
 	            }
 	        }
-	        if (!matched) i++;
+	        if (!matched) i++; // Skip unrecognized character
 	    }
 	    return days;
 	}
