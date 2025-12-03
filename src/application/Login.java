@@ -152,7 +152,7 @@ public class Login {
 
 		// Directs the user to Create an Account Screen
         clickable.setOnAction(e -> {
-        		mainStage.setScene(CreateAccount.createAccount(width, height, mainStage));
+        		mainStage.setScene(CreateAccount.createAccount(width, height, mainStage, null));
         		});
         
         VBox bottomE = new VBox(7,log,flow);
@@ -215,9 +215,15 @@ public class Login {
 		root.setOnMousePressed(e -> root.requestFocus());
         
 		Scene scene = new Scene(root, width, height);
-        scene.getStylesheets().add(Login.class.getResource("application.css").toExternalForm());
-        Platform.runLater(() -> root.requestFocus());
-        
+		scene.getStylesheets().add(Login.class.getResource("application.css").toExternalForm());
+		Platform.runLater(() -> root.requestFocus());
+
+		// Then after that, add the clickable action
+		clickable.setOnAction(e -> {
+		    Scene overlayScene = CreateAccount.createAccount(width, height, mainStage, scene);
+		    mainStage.setScene(overlayScene);
+		});
+
 		return scene;
 	}
 	
