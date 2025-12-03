@@ -12,7 +12,6 @@ public class Account {
     private final String password; 
     
     private final LinkedHashMap<String, Offering> basketCourses;
-//    private final LinkedHashMap<String, Offering> enrolledCourses;
 
     // Constructor
     public Account(String emailAddress, String firstName,
@@ -25,7 +24,6 @@ public class Account {
         this.password = password;
         
         this.basketCourses = new LinkedHashMap<>();
-//        this.enrolledCourses = new LinkedHashMap<>();
     }
 
     // Getters
@@ -36,17 +34,14 @@ public class Account {
     public String getProgram() { return program; }
     public String getPassword() { return password; }
     public LinkedHashMap<String, Offering> getBasket() { return basketCourses;}
-//    public LinkedHashMap<String, Offering> getEnrolledCourses() { return enrolledCourses;}
     
-    // Course Operations
-//    public void enrollCourse(Offering offering) {
-//        enrolledCourses.put(offering.getCode(), offering);
-//    }
     
+    // Other Methods
     public void addToBasket(Offering offering) {
-        basketCourses.put(offering.getCode(), offering);
+        String key = offering.getCode() + "-" + offering.getSection(); // UPDATE: Unique key per section
+        basketCourses.put(key, offering);
     }
-    
+
     public void removeFromBasket(String courseCode) {
         basketCourses.remove(courseCode); 
     }
@@ -55,9 +50,4 @@ public class Account {
 	public String toFile() {
 		return String.join(",", emailAddress, firstName, middleName, lastName, program, password);
 	}
-	
 }
-
-
-
-
