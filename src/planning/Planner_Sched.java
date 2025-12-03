@@ -162,18 +162,19 @@ public class Planner_Sched {
 	        if (startRow + rowSpan - 1 > 13) rowSpan = 13 - startRow + 1;
 	        if (rowSpan <= 0) return;
 
-	        // ===== BLOCK CONTENT CREATION  =====
-	        VBox blockContent = new VBox(2);
-	        Label codeLabel = new Label(o.getCode() + " " + o.getSection());
-	        Label roomLabel = new Label(o.getRoom() + " (" + o.getTime() + ")");
-	        codeLabel.setStyle("-fx-font-weight: bold; -fx-font-size: 10px;");
-	        roomLabel.setStyle("-fx-font-size: 9px;");
-	        blockContent.getChildren().addAll(codeLabel, roomLabel);
-	        blockContent.setAlignment(Pos.TOP_CENTER);
-	        blockContent.setPadding(new Insets(3));
-
-	        // ===== PLACE BLOCK ON SCHED  =====
+	        // ===== CREATE AND PLACE SCHED BLOCK  =====
 	        for (String day : days) {
+	        	// Block Content
+	        	VBox blockContent = new VBox(2);
+		        Label codeLabel = new Label(o.getCode() + " " + o.getSection());
+		        Label roomLabel = new Label(o.getRoom() + " (" + o.getTime() + ")");
+		        codeLabel.setStyle("-fx-font-weight: bold; -fx-font-size: 10px;");
+		        roomLabel.setStyle("-fx-font-size: 9px;");
+		        blockContent.getChildren().addAll(codeLabel, roomLabel);
+		        blockContent.setAlignment(Pos.TOP_CENTER);
+		        blockContent.setPadding(new Insets(3));
+		        
+		        // Block Placement
 	            Integer col = dayToCol.get(day.toLowerCase());
 	            if (col != null) {
 	                StackPane dayBlock = new StackPane(blockContent); // new StackPane per day
