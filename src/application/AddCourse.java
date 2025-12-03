@@ -11,53 +11,59 @@ public class AddCourse {
     public static boolean addCourse(Account account, Offering newCourse, Planner_Sched top) {
     	top.setWarning(null);
     	String newCode = newCourse.getCode().trim().toUpperCase();
-        String newSection = newCourse.getSection().trim().toUpperCase();
+    	String newSection = newCourse.getSection().trim().toUpperCase();
 
-		// No duplicate course
-        for (Offering existing : account.getBasket().values()) {
-            if (existing.getCode() != null && existing.getCode().equalsIgnoreCase(newCode)) {
-                top.error("[ERROR] " + newCourse.getCode() + " is already in your basket. Remove the existing course before adding a new section.");
-                return false;
-            }
-        }     
+    	// Gather existing offerings with the same course code
+    	List<Offering> sameCode = new ArrayList<>();
+    	for (Offering existing : account.getBasket().values()) {
+    	    if (existing.getCode().equalsIgnoreCase(newCode)) {
+    	        sameCode.add(existing);
+    	    }
+    	}
 
-        List<Offering> withSameCode = new ArrayList<>();
-        for (Offering existing : account.getBasket().values()) {
-            if (existing.getCode().trim().toUpperCase().equals(newCode)) {
-            	withSameCode.add(existing);
-            }
-                
-            if (withSameCode.size() >= 2) {
-            	top.error("[ERROR] You can only add a Lecture and Lab Class");
-            }
-        }
-        
-        if (withSameCode.size() == 1) {
-            Offering existing = withSameCode.get(0);
-            
-            boolean existingLab = existing.getSection().toUpperCase().contains("L");
-            boolean newIsLab = newSection.contains("L");
+    	// Only 1 Lecture + 1 Lab match allowed
+    	if (sameCode.size() >= 2) {
+    	    top.error("[ERROR] You can only add one Lecture and one Lab for " + newCode);
+    	    return false;
+    	}
 
-            if (existingLab == newIsLab) {
-                top.error("[ERROR] You already have a Lab Class.");
-                return false;
-            }
-        }
-    
-        // Check for schedule conflicts (True if overlap)
-        for (Offering existing : account.getBasket().values()) {
-            if (conflicts(existing, newCourse)) {
-            	 top.error("[ERROR] " + newCourse.getCode() + " overlaps with your added courses");
-            	return false;
-            }
-        }
+    	// If one exists, ensure valid lecture-lab pairing
+    	if (sameCode.size() == 1) {
+    	    Offering existing = sameCode.get(0);
 
-        // Add to basket if possible
-        account.addToBasket(newCourse);
-        top.success("[SUCCESS] Successfully added " + newCourse.getCode());
-       
-		
-        return true;
+    	    String existingSec = existing.getSection().toUpperCase();
+    	    String newSec = newSection.toUpperCase();
+
+			// Most lab sections contain L at the end !! Lazy checker, find alternative if possible
+    	    boolean existingIsLab = existingSec.contains("L");
+    	    boolean newIsLab = newSec.contains("L");
+
+    	    if (existingIsLab == newIsLab) {
+    	        top.error("[ERROR] You already added a " + (existingIsLab ? "Lab" : "Lecture") + " for " + newCode);
+    	        return false;
+    	    }
+
+    	    String existingPrefix = existingIsLab ? existingSec.split("-")[0] : existingSec;
+    	    String newPrefix = newIsLab ? newSec.split("-")[0] : newSec;
+
+    	    if (!existingPrefix.equalsIgnoreCase(newPrefix)) {
+    	        top.error("[ERROR] Section mismatch. Lab must match its lecture prefix.");
+    	        return false;
+    	    }
+    	}
+
+    	// Schedule conflict check
+    	for (Offering existing : account.getBasket().values()) {
+    	    if (conflicts(existing, newCourse)) {
+    	        top.error("[ERROR] " + newCourse.getCode() + " overlaps with your added courses");
+    	        return false;
+    	    }
+    	}
+
+    	// Add to basket
+    	account.addToBasket(newCourse);
+    	top.success("[SUCCESS] Successfully added " + newCourse.getCode());
+    	return true;
     }
 
     // Helper Method: Check if two offerings overlap in day/time
@@ -110,5 +116,6 @@ public class AddCourse {
         return hour * 60 + min;
     }
 }
+
 
 
