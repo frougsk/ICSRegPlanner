@@ -6,13 +6,12 @@ import java.nio.file.*;
 import java.util.*;
 
 public class CourseLoader {
-    // Attributes / Temp Storage
+
     private ArrayList<Course> bs = new ArrayList<>();
     private ArrayList<Course> master = new ArrayList<>();
     private ArrayList<Course> phd = new ArrayList<>();
     private ArrayList<Course> mit = new ArrayList<>();
 
-    // Getters
     public ArrayList<Course> getBS() {
         bs = getCourses(Path.of("data", "ics_cmsc_courses.csv"));
         return bs;
@@ -33,7 +32,6 @@ public class CourseLoader {
         return mit;
     }
 
-    // Get Courses
     public ArrayList<Course> getCourses(Path path) {
         ArrayList<Course> courses = new ArrayList<>();
         System.out.println("Loading CSV from: " + path.toAbsolutePath());
@@ -43,38 +41,63 @@ public class CourseLoader {
             br.readLine(); // skip header
 
             while ((line = br.readLine()) != null) {
-                String[] cDetails = line.split(",", 4);
 
-                // Skip row if not enough columns (Line corrupted)
-                if (cDetails.length < 4) {
+                // split raw into tokens
+                String[] raw = line.split(",");
+
+                if (raw.length < 3) {
                     System.out.println("Skipping invalid row: " + line);
                     continue;
                 }
 
-                String code = cDetails[0].trim();
-                String name = cDetails[1].trim();
-                int unit;
-                String description = cDetails[3].trim();
+                String code = raw[0].trim();
+                StringBuilder nameSB = new StringBuilder();
+                int unitIndex = -1;
 
-                // Parse units
-                try {
-                    unit = Integer.parseInt(cDetails[2].trim());
-                } catch (NumberFormatException ex) {
+                // find first integer/ units col
+                for (int i = 1; i < raw.length; i++) {
+                    try {
+                        Integer.parseInt(raw[i].trim());
+                        unitIndex = i;
+                        break;
+                    } catch (NumberFormatException ignore) {
+                        nameSB.append(raw[i]).append(", ");
+                    }
+                }
+
+                if (unitIndex == -1) {
                     System.out.println("Skipping row with invalid units: " + line);
                     continue;
                 }
 
-                // Determine type from file name
-                String file = path.getFileName().toString();
-                String type;
-                if (file.equals("ics_cmsc_courses.csv")) type = Course.BSCS;
-                else if (file.equals("ics_mit_courses.csv")) type = Course.MIT;
-                else if (file.equals("ics_mscs_courses.csv")) type = Course.MASTER;
-                else type = Course.PHD;
+                // clean
+                String name = nameSB.toString().trim();
+                if (name.endsWith(",")) {
+                    name = name.substring(0, name.length() - 1);
+                }
 
-                // Create and add course
-                Course c = new Course(code, name, unit, description, type);
-                courses.add(c);
+                int units = Integer.parseInt(raw[unitIndex].trim());
+
+                // all after integer is description
+                StringBuilder descSB = new StringBuilder();
+                for (int i = unitIndex + 1; i < raw.length; i++) {
+                    descSB.append(raw[i]).append(", ");
+                }
+
+                String description = descSB.toString().trim();
+                if (description.endsWith(",")) {
+                    description = description.substring(0, description.length() - 1);
+                }
+
+                // determine type
+                String file = path.getFileName().toString();
+                String type =
+                        file.equals("ics_cmsc_courses.csv") ? Course.BSCS :
+                        file.equals("ics_mit_courses.csv") ? Course.MIT :
+                        file.equals("ics_mscs_courses.csv") ? Course.MASTER :
+                        Course.PHD;
+
+                courses.add(new Course(code, name, units, description, type));
             }
 
         } catch (IOException e) {
@@ -83,4 +106,5 @@ public class CourseLoader {
 
         return courses;
     }
+
 }
