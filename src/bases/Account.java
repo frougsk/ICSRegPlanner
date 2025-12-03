@@ -42,8 +42,8 @@ public class Account {
         basketCourses.put(key, offering);
     }
 
-    public void removeFromBasket(String courseCode) {
-        basketCourses.remove(courseCode); 
+    public void removeFromBasket(String key) {
+        basketCourses.remove(key);
     }
 
 	//Converts to file format
@@ -51,3 +51,4 @@ public class Account {
 		return String.join(",", emailAddress, firstName, middleName, lastName, program, password);
 	}
 }
+
