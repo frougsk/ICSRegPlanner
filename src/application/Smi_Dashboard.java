@@ -88,6 +88,7 @@ public class Smi_Dashboard {
 		broot.setTop(topBar);
 		broot.setLeft(sidebar); 
 		broot.setCenter(showArea);
+		broot.setStyle("-fx-background-color: #f7f8f7;");
 		
         StackPane root = new StackPane(broot);
         root.getStyleClass().add("welcome_bg");
@@ -113,3 +114,4 @@ public class Smi_Dashboard {
         return scene;
     }
 }
+
