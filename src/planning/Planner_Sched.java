@@ -31,18 +31,8 @@ public class Planner_Sched {
 	
 	private StackPane root = new StackPane();
 	private GridPane schedGrid = new GridPane();
-	//private final Map<String, StackPane> dayTime = new HashMap<>();
-	private Label warnings;
 	
-	
-	public Planner_Sched(Account acc) {
-		// =========== WARNING PANEL ===========
-		Text warn = new Text("Warning Panel");
-		warn.getStyleClass().add("hello-style");
-		
-		warnings = new Label("-- All Clear --");
-		warnings.setWrapText(true);
-		
+	public Planner_Sched(Account acc) {	
 		//=========== SCHEDULE GRID  ===========
 		Text plan = new Text("Course Plan");
 		plan.getStyleClass().add("hello-style");
@@ -95,40 +85,16 @@ public class Planner_Sched {
 		
 		schedGrid.getStyleClass().add("schedule-grid");
 			
-		VBox warnPanel = new VBox(10, warn, warnings);
-		warnPanel.setAlignment(Pos.TOP_LEFT);
-		warnPanel.setMinWidth(250);
-		
 		VBox sched = new VBox(10, plan, schedGrid);
 		sched.setAlignment(Pos.CENTER);
-				
-		HBox panel = new HBox(50, sched, warnPanel);
-		panel.setAlignment(Pos.TOP_CENTER);
-		HBox.setHgrow(sched, Priority.ALWAYS);
-		panel.setPadding(new Insets(10, 75, 10, 75));
-		panel.getStyleClass().add("login-box");
-	    	   
-		root.getChildren().add(panel);
+			    	   
+		root.getChildren().add(sched);
 		updateSched(acc);		
 	    
 	}
 	
 	public Node getNode() {return root; }
-	
-	// =========== WARNING PROMPTS ===========
-	public void error(String msg) {
-		warnings.setText(msg);
-		warnings.setTextFill(Color.DARKRED);
-	}
-	
-	public void success(String msg) {
-		warnings.setText(msg);
-	}
-	
-	public void setWarning(String text) {
-		warnings.setText(text == null || text.trim().isEmpty() ? "-- All Clear --": text);
-	}
-	
+
 	
 	// =========== GRID UPDATE ===========
 	public void updateSched(Account a) {	
