@@ -195,8 +195,7 @@ public class CreateAccount {
 	    return scene;			
 	}
 
-	private static boolean saveAccount(Account a) {
-	    try {
+		private static boolean saveAccount(Account a) {
 	        File file = new File(CSV_PATH);
 	        
 	        // Create parent directories if they don't exist
@@ -224,15 +223,12 @@ public class CreateAccount {
 	            
 	            System.out.println("Account saved successfully: " + a.getEmailAddress());
 	            return true;
-	        }
-	        
-	    } catch (IOException e) {
-	        System.err.println("Error saving account: " + e.getMessage());
-	        e.printStackTrace();
-	        return false;
-	    }
-	    
-	}
+	        } catch (IOException e) {
+		        System.err.println("Error saving account: " + e.getMessage());
+		        e.printStackTrace();
+		        return false;
+	        	}	    
+		}
 	
 	// Helper method to map full degree names to codes
 	private static String mapDegreeToCode(String fullDegreeName) {
@@ -250,3 +246,4 @@ public class CreateAccount {
 	    }
 	}
 }
+
