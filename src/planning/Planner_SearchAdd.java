@@ -70,6 +70,8 @@ public class Planner_SearchAdd {
         // TABLE
         TableView<CourseRow> table = new TableView<>(filteredRows);
         table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        table.setPrefHeight(1000);
+        table.setMinHeight(500);
 
         table.setRowFactory(tv -> {
             TableRow<CourseRow> row = new TableRow<>();
