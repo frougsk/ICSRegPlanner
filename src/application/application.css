@@ -356,3 +356,17 @@
 .extra-button:hover{
     -fx-background-color: #E5E8C9;
 }
+
+.clear-button{
+	-fx-pref-width: 160px;
+	-fx-background-color: #f44336;
+    -fx-border-color: transparent;
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+    -fx-font-family: "Dotemp 8bit";
+    -fx-font-size: 18px; 
+}
+
+.clear-button:hover{
+	-fx-background-color: #e8938d;
+}
