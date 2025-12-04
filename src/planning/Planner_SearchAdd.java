@@ -166,8 +166,12 @@ public class Planner_SearchAdd {
         HBox searchRow = new HBox(10, codeSearch, titleSearch);
         searchRow.setAlignment(Pos.CENTER_LEFT);
 
+ 		Label searchLbl = new Label("ADD TO CART");
+        searchLbl.getStyleClass().add("hello-style");
+        searchLbl.setAlignment(Pos.CENTER);
+		
         VBox layout = new VBox(10,
-                new Label("COURSE SEARCH (Lecture + Lab)"),
+                //new Label("COURSE SEARCH (Lecture + Lab)"),
                 searchRow,
                 table
         );
