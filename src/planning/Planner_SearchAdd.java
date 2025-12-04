@@ -122,10 +122,10 @@ public class Planner_SearchAdd {
                     
                     if (lab == null) {
                         // No lab - just add the lecture as a single course
-                        success = AddCourse.addCourse(account, lec, schedView, null);
+                        success = AddCourse.addCourse(account, lec, basket, null);
                     } else {
                         // Has lab - add as bound pair
-                        success = AddCourse.addBoundPair(account, lec, lab, schedView);
+                        success = AddCourse.addBoundPair(account, lec, lab, basket);
                     }
                     
                     if (success) {
