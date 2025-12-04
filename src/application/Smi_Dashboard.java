@@ -106,12 +106,10 @@ public class Smi_Dashboard {
         dash.setOnAction(e -> showArea.getChildren().setAll(info.showInfo(width, height, account)));
         planner.setOnAction(e -> showArea.getChildren().setAll(plan.showPlanner(width, height, account)));
         course.setOnAction(e -> showArea.getChildren().setAll(courses.showCourse(width, height)));
-        profile.setOnAction(e -> showArea.getChildren().setAll(myPage.showProfile(width, height, account)));
+        profile.setOnAction(e -> showArea.getChildren().setAll(myPage.showProfile(width, height, mainStage, account)));
 
         Scene scene = new Scene(root, width, height);
         Platform.runLater(() -> scene.getRoot().requestFocus());
         scene.getStylesheets().add(Smi_Dashboard.class.getResource("application.css").toExternalForm());
         return scene;
     }
-}
-
