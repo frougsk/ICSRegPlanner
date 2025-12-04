@@ -64,15 +64,14 @@ public class AddCourse {
 
         // Check if this exact offering is already in basket
         if (account.getBasket().containsKey(newCourse.getKey())) {
-            mid.error("[ERROR] This course is already in your basket");
+            mid.error("[ERROR] This course is already in your basket.");
             return false;
         }
 
         // If course already exists with different section, reject
         if (!sameCode.isEmpty()) {
             Offering existing = sameCode.get(0);
-            mid.error("[ERROR] You already have " + existing.getCode() + " " +
-                    existing.getSection() + " in your basket");
+            mid.error("[ERROR] You already have " + existing.getCode() + " in your basket.");
             return false;
         }
 
@@ -213,8 +212,8 @@ public class AddCourse {
         account.addToBasket(lab);
 
         mid.success("[SUCCESS] Added " + lecture.getCode() + " " +
-                lecture.getSection() + " (Lecture) and " +
-                lab.getSection() + " (Lab)");
+                lecture.getSection() + " - " +
+                lab.getSection());
 
         return true;
     }
