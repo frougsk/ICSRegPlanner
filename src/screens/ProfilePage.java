@@ -1,8 +1,16 @@
 package screens;
 
+// Java Imports
+import java.nio.file.Paths;
+import java.util.ArrayList;
+
+// Package Imports
 import application.Fonts;
 import application.Login;
 import bases.Account;
+import fileHandlers.AccountLoader;
+
+// JavaFX Imports
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -15,12 +23,13 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
+import javafx.stage.Stage;
 
 public class ProfilePage {
 	private StackPane root;
     private VBox layout = new VBox();
     
-	public StackPane showProfile(double width, double height, Account account) {
+	public StackPane showProfile(double width, double height, Stage mainStage, Account account) {
 		ImageView pfp = new ImageView(Login.class.getResource("/assets/icon.png").toExternalForm());
 		pfp.setPreserveRatio(true);
 		pfp.setFitWidth(150);
@@ -63,12 +72,21 @@ public class ProfilePage {
 		info.setAlignment(Pos.TOP_LEFT);
 		info.getStyleClass().add("info-box");
 		
-		// =========== Button ===========
+		// =========== Buttons ===========
+		// Leads back to log in page
+		AccountLoader accload = new AccountLoader();
+		ArrayList<Account> accounts = accload.getAccounts(Paths.get("accounts_data/accounts.csv"));
+		
 		Button out = new Button("Sign Out");
 		out.getStyleClass().add("extra-button");
-		out.setOnAction(e -> System.exit(0));
+		out.setOnAction(e -> mainStage.setScene(Login.welcomeShow(width, height, mainStage, accounts)));
+
+		// Exits the program
+		Button exit = new Button("Exit");
+		exit.getStyleClass().add("extra-button");
+		exit.setOnAction(e -> System.exit(0));
 		
-		HBox btn = new HBox(out);
+		HBox btn = new HBox(5, out, exit);
 		btn.setAlignment(Pos.CENTER_RIGHT);
 
 		// =========== Layout ===========
