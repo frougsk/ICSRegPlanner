@@ -153,9 +153,11 @@ public class Planner_SearchAdd {
         // SEARCH BAR
         TextField codeSearch = new TextField();
         codeSearch.setPromptText("Course Code");
+        codeSearch.getStyleClass().add("course-textfields");
 
         TextField titleSearch = new TextField();
         titleSearch.setPromptText("Course Title");
+        titleSearch.getStyleClass().add("course-textfields");
 
         codeSearch.textProperty().addListener((a,b,c) ->
                 filterRows(codeSearch.getText(), titleSearch.getText()));
@@ -170,7 +172,7 @@ public class Planner_SearchAdd {
         searchLbl.getStyleClass().add("hello-style");
         searchLbl.setAlignment(Pos.CENTER);
 		
-        VBox layout = new VBox(10,
+        VBox layout = new VBox(10, searchLbl,
                 //new Label("COURSE SEARCH (Lecture + Lab)"),
                 searchRow,
                 table
