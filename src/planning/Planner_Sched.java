@@ -62,7 +62,7 @@ public class Planner_Sched {
 		for (int h = 7; h < 19; h++) {
 			for (int d = 0; d < days.length; d++) {
 				StackPane cell = new StackPane();
-				cell.setMinSize(120, 30);
+				cell.setMinSize(115, 30);
 				cell.getStyleClass().add("schedule-cell");
 				schedGrid.add(cell,  d+1, row);
 			}
@@ -72,17 +72,19 @@ public class Planner_Sched {
 		// Column Fitting
 		for (int i = 0; i < 7; i++) {
 		    ColumnConstraints colConst = new ColumnConstraints();
-		    colConst.setPrefWidth(i == 0 ? 90 : 130);
-		    colConst.setMinWidth(90);
-		    colConst.setMaxWidth(130);
+		    colConst.setPrefWidth(i == 0 ? 60 : 160);   // Time column: 80px, day columns: 160px
+		    colConst.setMinWidth(i == 0 ? 60 : 100);    // Time column minimum: 75px
+		    colConst.setMaxWidth(i == 0 ? 60 : 180);    // Time column maximum: 85px
 		    schedGrid.getColumnConstraints().add(colConst);
 		}
 
 		
 		// =========== LAYOUT ===========
+		schedGrid.setPrefWidth(1000);
+		schedGrid.setMaxWidth(1000);
 		schedGrid.setHgap(7);
 		schedGrid.setVgap(7);
-		schedGrid.setPadding(new Insets(5));
+		schedGrid.setPadding(new Insets(3));
 		
 		schedGrid.getStyleClass().add("schedule-grid");
 			
