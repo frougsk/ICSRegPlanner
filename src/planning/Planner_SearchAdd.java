@@ -118,9 +118,11 @@ public class Planner_SearchAdd {
                     Offering lec = rowItem.getLecture();
                     Offering lab = rowItem.getLab();
 
-                    boolean success;
+                    boolean success = false; 
                     
-                    if (lab == null) {
+                    if (!programCheck(account, lec)) {
+                    	basket.error("[ERROR] " + lec.getCode() + " is not offered in your program");
+                    } else if (lab == null) {
                         // No lab - just add the lecture as a single course
                         success = AddCourse.addCourse(account, lec, basket, null);
                     } else {
@@ -170,7 +172,7 @@ public class Planner_SearchAdd {
 
  		Label searchLbl = new Label("ADD TO CART");
         searchLbl.getStyleClass().add("hello-style");
-        searchLbl.setAlignment(Pos.CENTER);
+        searchLbl.setAlignment(Pos.TOP_CENTER);
 		
         VBox layout = new VBox(10, searchLbl,
                 //new Label("COURSE SEARCH (Lecture + Lab)"),
@@ -283,5 +285,35 @@ public class Planner_SearchAdd {
 
     public void setAddToBasket(Consumer<Offering> handler) {
         this.addToBasket = handler;
+    }
+    
+    public static boolean programCheck(Account a, Offering o) {
+    	CourseLoader loader = new CourseLoader();
+		ArrayList<Course> bs = loader.getBS();
+		ArrayList<Course> master = loader.getMasters();
+		ArrayList<Course> phd = loader.getPHD();
+		ArrayList<Course> mit = loader.getMITS();
+    	
+    	String userProg = a.getProgram().toUpperCase();
+    	String offeringCode = o.getCode();
+    	
+    	ArrayList<Course> allowedCourses = null;
+    	if (userProg.contains("BS")) {
+    		allowedCourses = bs;    		
+    	} else if (userProg.contains("MS")) {
+    		allowedCourses = master;
+    	} else if (userProg.contains("PHD")) {
+    		allowedCourses = phd;
+    	} else if (userProg.contains("TECH")) {
+    		allowedCourses = mit;
+    	} else return false;	   	
+   
+    	for (Course c: allowedCourses) {
+    		String allowedCode = c.getCode().trim();
+    		if (allowedCode.equals(offeringCode)) {
+    			return true;
+    		}
+    	}
+		return false;   
     }
 }
