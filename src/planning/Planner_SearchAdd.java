@@ -24,6 +24,7 @@ public class Planner_SearchAdd {
     private Account account;
     private Planner_Sched schedView;
     private FilteredList<CourseRow> filteredRows;
+	private Planner_BasketView basketView;
 
     // ==========================================================
     // Inner class representing one table row 
@@ -53,9 +54,10 @@ public class Planner_SearchAdd {
     // ==========================================================
     // Constructor
     // ==========================================================
-    public Planner_SearchAdd(Account acc, Planner_Sched top) {
+    public Planner_SearchAdd(Account acc, Planner_Sched top, Planner_BasketView basket) {
         this.account = acc;
         this.schedView = top;
+        this.basketView = basket;
 
         OfferingLoader loader = new OfferingLoader();
         YearSet ay = loader.getOfferings(Paths.get("data/course_offerings.csv"));
@@ -116,15 +118,20 @@ public class Planner_SearchAdd {
                     Offering lec = rowItem.getLecture();
                     Offering lab = rowItem.getLab();
 
+                    boolean success;
+                    
                     if (lab == null) {
-                        schedView.error("[ERROR] No lab section in this row");
-                        return;
+                        // No lab - just add the lecture as a single course
+                        success = AddCourse.addCourse(account, lec, schedView, null);
+                    } else {
+                        // Has lab - add as bound pair
+                        success = AddCourse.addBoundPair(account, lec, lab, schedView);
                     }
-
-                    boolean success = AddCourse.addBoundPair(account, lec, lab, schedView);
-                    if (success && addToBasket != null) {
-                        addToBasket.accept(lec);
-                        addToBasket.accept(lab);
+                    
+                    if (success) {
+                        // Refresh both views directly
+                        schedView.updateSched(account);
+                        basketView.refresh(account);
                     }
                 });
 
