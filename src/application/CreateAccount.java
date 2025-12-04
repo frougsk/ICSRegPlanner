@@ -27,14 +27,14 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.File;
 import java.io.FileWriter;
+import java.io.BufferedWriter;
 import java.util.ArrayList;
 
 public class CreateAccount {
 	
-	private static ArrayList<Account> accounts = new ArrayList<>();
-	private static final String CSV_PATH =  "accounts_data/accounts.csv";
+	private static final String CSV_PATH = "accounts_data/accounts.csv";
 
-	public static Scene createAccount(double width, double height, Stage mainStage, Scene loginScene) {
+	public static Scene createAccount(double width, double height, Stage mainStage, Scene loginScene, ArrayList<Account> accounts) {
 	    // =========== CREATE ACCOUNT BOX  ===========
 	    ImageView sign = new ImageView(Login.class.getResource("/assets/icon.png").toExternalForm());
 	    sign.setPreserveRatio(true);
@@ -147,10 +147,18 @@ public class CreateAccount {
 	            Notifier.passwordNotMatch();
 	            return;
 	        } else {
-	            Account a = new Account(email.getText(),firstName.getText(), middleName.getText(), 
-	                    lastName.getText(), degree.getValue(), password.getText());
+	            // Map degree to short code
+	            String programCode = mapDegreeToCode(degree.getValue());
+	            
+	            Account a = new Account(email.getText(), firstName.getText(), middleName.getText(), 
+	                    lastName.getText(), programCode, password.getText());
+	            
+	            // ADD TO THE ACCOUNTS LIST (this was missing!)
 	            accounts.add(a);
+	            
+	            // Save to CSV
 	            saveAccount(a);
+	            
 	            Notifier.successfullyCreated();
 	            mainStage.setScene(loginScene);
 	        }
@@ -187,13 +195,58 @@ public class CreateAccount {
 	    return scene;			
 	}
 
-	private static void saveAccount(Account a) {
-		File file = new File(CSV_PATH);
-		file.getParentFile().mkdirs();
-		try(FileWriter fw = new FileWriter(file, true)){
-			fw.write(a.toFile() + "\n");
-			//for (Account a: accounts) p.println(a.toFile());
-		} catch(IOException e) {e.printStackTrace();}
+	private static boolean saveAccount(Account a) {
+	    try {
+	        File file = new File(CSV_PATH);
+	        
+	        // Create parent directories if they don't exist
+	        File parentDir = file.getParentFile();
+	        if (parentDir != null && !parentDir.exists()) {
+	            parentDir.mkdirs();
+	        }
+	        
+	        // Check if file exists and needs header
+	        boolean fileExists = file.exists();
+	        boolean needsHeader = !fileExists || file.length() == 0;
+	        
+	        // Append to file (create if doesn't exist)
+	        try (BufferedWriter writer = new BufferedWriter(new FileWriter(file, true))) {
+	            // Write header if file is new or empty
+	            if (needsHeader) {
+	                writer.write("Email,First Name,Middle Name,Last Name,Program,Password");
+	                writer.newLine();
+	            }
+	            
+	            // Write account data
+	            writer.write(a.toFile());
+	            writer.newLine();
+	            writer.flush();
+	            
+	            System.out.println("Account saved successfully: " + a.getEmailAddress());
+	            return true;
+	        }
+	        
+	    } catch (IOException e) {
+	        System.err.println("Error saving account: " + e.getMessage());
+	        e.printStackTrace();
+	        return false;
+	    }
+	    
 	}
-
+	
+	// Helper method to map full degree names to codes
+	private static String mapDegreeToCode(String fullDegreeName) {
+	    switch(fullDegreeName) {
+	        case "Bachelor of Science in Computer Science":
+	            return "BSCS";
+	        case "Master of Science in Computer Science":
+	            return "MSCS";
+	        case "Doctor of Philosophy in Computer Science":
+	            return "PhD CS";
+	        case "Master of Information Technology":
+	            return "MIT";
+	        default:
+	            return fullDegreeName;
+	    }
+	}
 }
