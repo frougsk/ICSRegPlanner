@@ -5,11 +5,14 @@ import fileHandlers.*;
 
 import javafx.collections.*;
 import javafx.collections.transformation.FilteredList;
+import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.geometry.VPos;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
@@ -47,36 +50,51 @@ public class Planner_Sched {
 		String[] days = {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
 		for (int d = 0; d < days.length; d++) {
 			Label dayLbl = new Label(days[d]);
-			dayLbl.setAlignment(Pos.CENTER);
+			dayLbl.getStyleClass().add("schedule-day");
+			GridPane.setHalignment(dayLbl, HPos.CENTER);
 			schedGrid.add(dayLbl, d+1, 0);
 		}
 		
 		int row =1;
-		for (int h = 7; h <= 19; h++) {
-			Label hour = new Label(h + ":00");
-			hour.setAlignment(Pos.CENTER);
+		for (int h = 7; h < 19; h++) {
+			Label hour = new Label(h + ":00 - " + (h+1) + ":00");
 			hour.setMinWidth(40);
+			hour.getStyleClass().add("schedule-hour");
+			GridPane.setHalignment(hour, HPos.CENTER);
+			GridPane.setValignment(hour, VPos.CENTER);
 			schedGrid.add(hour, 0, row);
 			row++;
 		}
 		
 		// Grid Layout
 		row = 1;
-		for (int h = 7; h <= 19; h++) {
+		for (int h = 7; h < 19; h++) {
 			for (int d = 0; d < days.length; d++) {
 				StackPane cell = new StackPane();
 				cell.setMinSize(100, 20);
+				cell.getStyleClass().add("schedule-cell");
 				schedGrid.add(cell,  d+1, row);
 			}
 			row++;
 		}
 		
+		// Column Fitting
+		for (int i = 0; i < 7; i++) {
+		    ColumnConstraints colConst = new ColumnConstraints();
+		    colConst.setPrefWidth(i == 0 ? 80 : 120); // first column narrower, others wider
+		    colConst.setMinWidth(80);
+		    colConst.setMaxWidth(120); // optional: fix max width
+		    schedGrid.getColumnConstraints().add(colConst);
+		}
+
+		
 		// =========== LAYOUT ===========
-		schedGrid.setGridLinesVisible(true);
 		schedGrid.setHgap(5);
 		schedGrid.setVgap(5);
 		schedGrid.setPadding(new Insets(10));
 		
+		schedGrid.getStyleClass().add("schedule-grid");
+			
 		VBox warnPanel = new VBox(10, warn, warnings);
 		warnPanel.setAlignment(Pos.TOP_LEFT);
 		warnPanel.setMinWidth(250);
@@ -167,18 +185,19 @@ public class Planner_Sched {
 	        	// Block Content
 	        	VBox blockContent = new VBox(2);
 		        Label codeLabel = new Label(o.getCode() + " " + o.getSection());
-		        Label roomLabel = new Label(o.getRoom() + " (" + o.getTime() + ")");
-		        codeLabel.setStyle("-fx-font-weight: bold; -fx-font-size: 10px;");
-		        roomLabel.setStyle("-fx-font-size: 9px;");
+		        Label roomLabel = new Label(o.getRoom());
+		        codeLabel.setStyle("-fx-font-family: VT323; -fx-font-size: 20px;");
+		        roomLabel.setStyle("-fx-font-size: 11px;");
 		        blockContent.getChildren().addAll(codeLabel, roomLabel);
-		        blockContent.setAlignment(Pos.TOP_CENTER);
+		        blockContent.setAlignment(Pos.CENTER);
 		        blockContent.setPadding(new Insets(3));
 		        
 		        // Block Placement
 	            Integer col = dayToCol.get(day.toLowerCase());
 	            if (col != null) {
 	                StackPane dayBlock = new StackPane(blockContent); // new StackPane per day
-	                dayBlock.setStyle("-fx-background-color: #4682B4; -fx-border-color: green; -fx-border-width: 1;");
+	                dayBlock.setStyle("-fx-background-color: #f0ffc5; -fx-border-color: #a3b960;"
+	                				+ "-fx-border-radius: 7px; -fx-background-radius: 7px;");
 	                dayBlock.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
 	                dayBlock.setUserData("courseBlock");
 
@@ -250,3 +269,6 @@ public class Planner_Sched {
 	    return hour * 60 + min;
 	}
 }
+
+// References:
+// Column Constraint: https://docs.oracle.com/javase/8/javafx/api/index.html?javafx/scene/layout/ColumnConstraints.html
