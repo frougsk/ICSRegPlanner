@@ -392,10 +392,40 @@
     -fx-background-color: #7f858e;
 }
 
-
 .scroll-bar:vertical .increment-button,
 .scroll-bar:vertical .decrement-button {
     -fx-padding: 0;
     -fx-background-color: transparent;
     -fx-shape: " ";
+}
+
+.schedule-grid {
+    -fx-background-color: #fdfdfd;
+    -fx-border-color: #cccccc;
+    -fx-border-radius: 7px;
+    -fx-border-width: 1;
+}
+
+.schedule-cell {
+    -fx-background-color: #ffffff;
+    -fx-border-radius: 7px;
+    -fx-border-color: #e0e0e0;
+    -fx-border-width: 0.5;
+}
+
+.schedule-hour {
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #555555;
+    -fx-alignment: center;
+}
+
+.schedule-day {
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #333333;
+}
+
+.schedule-header{
+	-fx-background-color: #e8f0d9;
 }
