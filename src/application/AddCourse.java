@@ -9,14 +9,15 @@ import bases.Offering;
 import planning.Planner_Sched;
 
 public class AddCourse {
-    
+
     // Main add course method - checks for binding requirements
     public static boolean addCourse(Account account, Offering newCourse, Planner_Sched top) {
         return addCourse(account, newCourse, top, null);
     }
-    
-    public static boolean addCourse(Account account, Offering newCourse, Planner_Sched top, 
-                                   Map<String, Offering> allOfferings) {
+
+    public static boolean addCourse(Account account, Offering newCourse, Planner_Sched top,
+                                    Map<String, Offering> allOfferings) {
+
         top.setWarning(null);
         String newCode = newCourse.getCode().trim().toUpperCase();
         String newSection = newCourse.getSection().trim().toUpperCase();
@@ -24,22 +25,24 @@ public class AddCourse {
         // Check if offering has a binding requirement
         if (newCourse.hasBinding()) {
             String boundKey = newCourse.getBoundKey();
-            
+
             // Check if the bound course is already in basket
             boolean boundInBasket = account.getBasket().containsKey(boundKey);
-            
+
             if (!boundInBasket) {
                 // Bound course is NOT in basket
                 if (allOfferings != null) {
                     Offering boundOffering = allOfferings.get(boundKey);
                     if (boundOffering != null) {
+
                         // Determine which is lecture and which is lab
                         Offering lecture = newCourse.isLab() ? boundOffering : newCourse;
                         Offering lab = newCourse.isLab() ? newCourse : boundOffering;
-                        
-                        top.error("[BINDING REQUIRED] " + lecture.getCode() + " " + 
-                                lecture.getSection() + " requires " + 
+
+                        top.error("[BINDING REQUIRED] " + lecture.getCode() + " " +
+                                lecture.getSection() + " requires " +
                                 lab.getSection() + ". Use 'Add Lecture + Lab' button.");
+
                     } else {
                         top.error("[BINDING ERROR] Required paired section not found: " + boundKey);
                     }
@@ -59,44 +62,28 @@ public class AddCourse {
             }
         }
 
-        // Only 1 Lecture + 1 Lab match allowed (or just 1 lecture for courses without labs)
-        if (sameCode.size() >= 2) {
-            top.error("[ERROR] You can only add one Lecture and one Lab for " + newCode);
+        // Check if this exact offering is already in basket
+        if (account.getBasket().containsKey(newCourse.getKey())) {
+            top.error("[ERROR] This course is already in your basket");
             return false;
         }
 
-        // If one exists, ensure valid lecture-lab pairing
-        if (sameCode.size() == 1) {
+        // If course already exists with different section, reject
+        if (!sameCode.isEmpty()) {
             Offering existing = sameCode.get(0);
-
-            String existingSec = existing.getSection().toUpperCase();
-            String newSec = newSection.toUpperCase();
-
-            // Most lab sections contain L at the end
-            boolean existingIsLab = existingSec.endsWith("L");
-            boolean newIsLab = newSec.endsWith("L");
-
-            if (existingIsLab == newIsLab) {
-                top.error("[ERROR] You already added a " + (existingIsLab ? "Lab" : "Lecture") + " for " + newCode);
-                return false;
-            }
-
-            // Extract prefix (e.g., "G" from "G-1L")
-            String existingPrefix = existingIsLab ? existingSec.split("-")[0] : existingSec;
-            String newPrefix = newIsLab ? newSec.split("-")[0] : newSec;
-
-            if (!existingPrefix.equalsIgnoreCase(newPrefix)) {
-                top.error("[ERROR] Section mismatch. Lab must match its lecture prefix.");
-                return false;
-            }
+            top.error("[ERROR] You already have " + existing.getCode() + " " +
+                    existing.getSection() + " in your basket");
+            return false;
         }
 
-        // Schedule conflict check
-        for (Offering existing : account.getBasket().values()) {
-            if (conflicts(existing, newCourse)) {
-                top.error("[ERROR] " + newCourse.getCode() + " " + newCourse.getSection() + 
-                        " overlaps with " + existing.getCode() + " " + existing.getSection());
-                return false;
+        // Schedule conflict check (skip if TBA)
+        if (newCourse.getTime() != null && !newCourse.getTime().equalsIgnoreCase("TBA")) {
+            for (Offering existing : account.getBasket().values()) {
+                if (conflicts(existing, newCourse)) {
+                    top.error("[ERROR] " + newCourse.getCode() + " " + newCourse.getSection() +
+                            " overlaps with " + existing.getCode() + " " + existing.getSection());
+                    return false;
+                }
             }
         }
 
@@ -106,78 +93,150 @@ public class AddCourse {
         return true;
     }
 
+
     // Add both lecture and lab together
-    public static boolean addBoundPair(Account account, Offering offering1, Offering offering2, 
-                                      Planner_Sched top) {
+    public static boolean addBoundPair(Account account, Offering offering1, Offering offering2,
+                                       Planner_Sched top) {
+
         top.setWarning(null);
-        
+
         // Determine which is lecture and which is lab
         Offering lecture = offering1.isLab() ? offering2 : offering1;
         Offering lab = offering1.isLab() ? offering1 : offering2;
-        
+
         String code = lecture.getCode();
-        
-        // Check if either already exists
+        String lectureSection = lecture.getSection().toUpperCase();
+        String labSection = lab.getSection().toUpperCase();
+
+        // Extract lab prefix (e.g., "G" from "G-1L")
+        String labPrefix = labSection.contains("-")
+                ? labSection.split("-")[0]
+                : labSection.replace("L", "");
+
+        // Verify the lecture and lab match each other
+        if (!lectureSection.equals(labPrefix)) {
+            top.error("[ERROR] Section mismatch: Lecture " + lectureSection +
+                    " doesn't match Lab " + labSection);
+            return false;
+        }
+
+        // Check if this exact lecture is already in basket
         if (account.getBasket().containsKey(lecture.getKey())) {
             top.error("[ERROR] Lecture " + lecture.getSection() + " is already in your basket");
             return false;
         }
+
+        // Check if this exact lab is already in basket
         if (account.getBasket().containsKey(lab.getKey())) {
             top.error("[ERROR] Lab " + lab.getSection() + " is already in your basket");
             return false;
         }
-        
-        // Check if user already has any section of this course
+
+        // Count existing offerings of this course code
+        int lectureCount = 0;
+        int labCount = 0;
+
         for (Offering existing : account.getBasket().values()) {
             if (existing.getCode().equalsIgnoreCase(code)) {
-                top.error("[ERROR] You already have " + existing.getCode() + " " + 
-                        existing.getSection() + " in your basket");
-                return false;
+                String existingSection = existing.getSection().toUpperCase();
+                if (existingSection.endsWith("L")) {
+                    labCount++;
+                } else {
+                    lectureCount++;
+                }
             }
         }
-        
-        // Check for conflicts with lecture
+
+        // If we already have both a lecture and a lab for this course, reject
+        if (lectureCount > 0 && labCount > 0) {
+            top.error("[ERROR] You already have a complete lecture+lab set for " + code);
+            return false;
+        }
+
+        // If we have a lecture but no lab, make sure the new lab matches
+        if (lectureCount > 0 && labCount == 0) {
+            for (Offering existing : account.getBasket().values()) {
+                if (existing.getCode().equalsIgnoreCase(code)
+                        && !existing.getSection().toUpperCase().endsWith("L")) {
+
+                    String existingLectureSection = existing.getSection().toUpperCase();
+
+                    if (!existingLectureSection.equals(labPrefix)) {
+                        top.error("[ERROR] Lab " + labSection + " doesn't match existing lecture " +
+                                existingLectureSection);
+                        return false;
+                    }
+                }
+            }
+        }
+
+        // If we have a lab but no lecture, make sure the new lecture matches
+        if (labCount > 0 && lectureCount == 0) {
+            for (Offering existing : account.getBasket().values()) {
+                if (existing.getCode().equalsIgnoreCase(code)
+                        && existing.getSection().toUpperCase().endsWith("L")) {
+
+                    String existingLabSection = existing.getSection().toUpperCase();
+                    String existingLabPrefix = existingLabSection.contains("-")
+                            ? existingLabSection.split("-")[0]
+                            : existingLabSection.replace("L", "");
+
+                    if (!existingLabPrefix.equals(lectureSection)) {
+                        top.error("[ERROR] Lecture " + lectureSection +
+                                " doesn't match existing lab " + existingLabSection);
+                        return false;
+                    }
+                }
+            }
+        }
+
+        // Check for time conflicts with lecture
         for (Offering existing : account.getBasket().values()) {
             if (conflicts(existing, lecture)) {
-                top.error("[CONFLICT] Lecture " + lecture.getSection() + 
+                top.error("[CONFLICT] Lecture " + lecture.getSection() +
                         " conflicts with " + existing.getCode() + " " + existing.getSection());
                 return false;
             }
         }
-        
-        // Check for conflicts with lab
+
+        // Check for time conflicts with lab
         for (Offering existing : account.getBasket().values()) {
             if (conflicts(existing, lab)) {
-                top.error("[CONFLICT] Lab " + lab.getSection() + 
+                top.error("[CONFLICT] Lab " + lab.getSection() +
                         " conflicts with " + existing.getCode() + " " + existing.getSection());
                 return false;
             }
         }
-        
-        // Add both to basket
+
+        // All checks passed - add both to basket
         account.addToBasket(lecture);
         account.addToBasket(lab);
-        
-        top.success("[SUCCESS] Added " + lecture.getCode() + " " + 
-                lecture.getSection() + " (Lecture) and " + 
+
+        top.success("[SUCCESS] Added " + lecture.getCode() + " " +
+                lecture.getSection() + " (Lecture) and " +
                 lab.getSection() + " (Lab)");
+
         return true;
     }
 
+
     // Check if two offerings overlap in day/time
     private static boolean conflicts(Offering a, Offering b) {
-        // Skip if either has no time/day info
-        if (a.getTime() == null || a.getDay() == null || 
-            b.getTime() == null || b.getDay() == null) {
+
+        // Skip if either has no time/day info or if times are TBA
+        if (a.getTime() == null || a.getDay() == null ||
+                b.getTime() == null || b.getDay() == null ||
+                a.getTime().equalsIgnoreCase("TBA") ||
+                b.getTime().equalsIgnoreCase("TBA")) {
             return false;
         }
-        
+
         // Check if they share any common days
         if (!daysOverlap(a.getDay(), b.getDay())) {
             return false;
         }
 
-        // Parse times with format "HH:MM-HH:MM" or "H:MM-H:MM"
+        // Parse times "HH:MM-HH:MM"
         try {
             String[] aTimes = a.getTime().split("-");
             String[] bTimes = b.getTime().split("-");
@@ -187,53 +246,121 @@ public class AddCourse {
             int bStart = toMinutes(bTimes[0]);
             int bEnd = toMinutes(bTimes[1]);
 
-            // Overlap logic: A and B overlap if A starts before B ends AND B starts before A ends
             return (aStart < bEnd && bStart < aEnd);
+
         } catch (Exception e) {
-            return false; // If parsing fails, assume no conflict
+            System.out.println("Error checking conflict between " +
+                    a.getCode() + " and " + b.getCode() + ": " + e.getMessage());
+            return false;
         }
     }
-    
-    // Check if two day strings have any overlap
+
+
+    // Check if two day strings overlap
     private static boolean daysOverlap(String days1, String days2) {
-        days1 = days1.toUpperCase();
-        days2 = days2.toUpperCase();
-        
-        // Common day abbreviations
-        String[] dayAbbr = {"MON", "TUES", "WED", "THURS", "FRI", "SAT", "SUN", "M", "T", "W", "TH", "F", "S"};
-        
-        for (String day : dayAbbr) {
-            if (days1.contains(day) && days2.contains(day)) {
-                return true;
+
+        if (days1 == null || days2 == null) return false;
+
+        days1 = days1.toUpperCase().trim();
+        days2 = days2.toUpperCase().trim();
+
+        List<String> parsed1 = parseDays(days1);
+        List<String> parsed2 = parseDays(days2);
+
+        for (String d1 : parsed1) {
+            for (String d2 : parsed2) {
+                if (d1.equals(d2)) return true;
             }
         }
+
         return false;
     }
 
-    // Helper Method: Convert "HH:MM" or "H:MM" to minutes since midnight
+
+    // Parse day strings into list
+    private static List<String> parseDays(String dayStr) {
+
+        List<String> days = new ArrayList<>();
+        if (dayStr == null || dayStr.isEmpty()) return days;
+
+        dayStr = dayStr.toUpperCase().trim();
+
+        List<String> abbrOrder = List.of(
+                "THURS", "TUES", "WED", "FRI", "SAT", "SUN",
+                "MON", "TH", "T", "W", "F", "S", "M"
+        );
+
+        Map<String, String> dayMap = Map.ofEntries(
+                Map.entry("MONDAY", "MON"),
+                Map.entry("TUESDAY", "TUES"),
+                Map.entry("WEDNESDAY", "WED"),
+                Map.entry("THURSDAY", "THURS"),
+                Map.entry("FRIDAY", "FRI"),
+                Map.entry("SATURDAY", "SAT"),
+                Map.entry("SUNDAY", "SUN"),
+                Map.entry("THURS", "THURS"),
+                Map.entry("TUES", "TUES"),
+                Map.entry("WED", "WED"),
+                Map.entry("FRI", "FRI"),
+                Map.entry("SAT", "SAT"),
+                Map.entry("SUN", "SUN"),
+                Map.entry("MON", "MON"),
+                Map.entry("TH", "THURS"),
+                Map.entry("T", "TUES"),
+                Map.entry("W", "WED"),
+                Map.entry("F", "FRI"),
+                Map.entry("S", "SAT"),
+                Map.entry("M", "MON")
+        );
+
+        int i = 0;
+        while (i < dayStr.length()) {
+            boolean matched = false;
+
+            for (String abbr : abbrOrder) {
+                if (dayStr.startsWith(abbr, i)) {
+                    String normalized = dayMap.get(abbr);
+
+                    if (normalized != null && !days.contains(normalized)) {
+                        days.add(normalized);
+                    }
+
+                    i += abbr.length();
+                    matched = true;
+                    break;
+                }
+            }
+
+            if (!matched) i++;
+        }
+
+        return days;
+    }
+
+
+    // Convert "HH:MM" to minutes from midnight
     static int toMinutes(String time) {
+
         time = time.trim();
-        
-        // Split into hours and minutes
         String[] parts = time.split(":");
-        
+
         if (parts.length < 2) {
             try {
                 int hour = Integer.parseInt(time);
-                parts = new String[] {String.valueOf(hour), "00"};
+                parts = new String[]{String.valueOf(hour), "00"};
             } catch (NumberFormatException e) {
-                return 0; 
+                return 0;
             }
         }
 
-        int hour = Integer.parseInt(parts[0]);
-        int min = Integer.parseInt(parts[1]);
-      
-        // Handle PM times (1-6 are assumed PM, 7-12 stay as is)
-        if (hour >= 1 && hour <= 6) { 
-            hour += 12; 
+        int hour = Integer.parseInt(parts[0].trim());
+        int min = Integer.parseInt(parts[1].trim());
+
+        // Convert 1–6 PM rule
+        if (hour >= 1 && hour <= 6) {
+            hour += 12;
         }
-        
+
         return hour * 60 + min;
     }
 }
