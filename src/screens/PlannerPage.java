@@ -97,13 +97,15 @@ public class PlannerPage {
 	    buttonBox.setPadding(new Insets(10));
 	    
 	    // =========== Layout ===========
-	    HBox topView = new HBox(20, top.getNode(), middle.getNode());
+	    HBox topView = new HBox(10, top.getNode(), middle.getNode());
+	    
+	    VBox hello = new VBox(10, topView, buttonBox);
 
-	    layout = new VBox(15, buttonBox, topView, bottom.getNode());
+	    layout = new VBox(15, hello, bottom.getNode());
 	    layout.setAlignment(Pos.TOP_CENTER);
 	    layout.setPadding(new Insets(20,40,20,40));
 	    layout.setStyle("-fx-background-color: white;");
-	    layout.setSpacing(25);
+	    layout.setSpacing(3);
 	   
 	    ScrollPane scroll = new ScrollPane(layout);
 	    scroll.setFitToWidth(true);
