@@ -114,6 +114,7 @@ public class Planner_SearchAdd {
 
                 Button addBtn = new Button("Add");
                 addBtn.setMinWidth(60);
+                addBtn.getStyleClass().add("adddel-button");
                 addBtn.setOnAction(e -> {
                     Offering lec = rowItem.getLecture();
                     Offering lab = rowItem.getLab();
@@ -123,10 +124,10 @@ public class Planner_SearchAdd {
                     if (!programCheck(account, lec)) {
                     	basket.error("[ERROR] " + lec.getCode() + " is not offered in your program");
                     } else if (lab == null) {
-                        // No lab - just add the lecture as a single course
+                        // No lab
                         success = AddCourse.addCourse(account, lec, basket, null);
                     } else {
-                        // Has lab - add as bound pair
+                        // Has lab
                         success = AddCourse.addBoundPair(account, lec, lab, basket);
                     }
                     
@@ -136,12 +137,11 @@ public class Planner_SearchAdd {
                         basketView.refresh(account);
                     }
                 });
-
-                // A spacer to push the Add button to the right edge of the cell content
+                
                 Region spacer = new Region();
                 HBox.setHgrow(spacer, Priority.ALWAYS);
 
-                // Pack lecture card and lab card into a VBox/HBox to better match screenshot styling
+                // Pack lecture card and lab card into a Hbox
                 HBox cardsBox = new HBox(10, lectureCard, labCard);
                 cardsBox.setAlignment(Pos.CENTER_LEFT);
 
@@ -170,15 +170,14 @@ public class Planner_SearchAdd {
         HBox searchRow = new HBox(10, codeSearch, titleSearch);
         searchRow.setAlignment(Pos.CENTER_LEFT);
 
- 		Label searchLbl = new Label("ADD TO CART");
+ 		Label searchLbl = new Label("ADD CLASSES");
         searchLbl.getStyleClass().add("hello-style");
         searchLbl.setAlignment(Pos.TOP_CENTER);
+        
+        VBox lay = new VBox(10, searchLbl, searchRow);
+        lay.getStyleClass().add("gen-box");
 		
-        VBox layout = new VBox(10, searchLbl,
-                //new Label("COURSE SEARCH (Lecture + Lab)"),
-                searchRow,
-                table
-        );
+        VBox layout = new VBox(20, lay, table);
         layout.setPadding(new Insets(16));
 
         root = new StackPane(layout);
@@ -191,19 +190,19 @@ public class Planner_SearchAdd {
         VBox box = new VBox(6);
         box.setPadding(new Insets(10));
         box.setMinWidth(320);
-        box.setStyle("""
-                -fx-background-color: #e8f0ff;
-                -fx-background-radius: 8;
-                -fx-border-radius: 8;
-                -fx-border-color: #4a85ff;
-                """);
+        box.getStyleClass().add("meow-box");
 
         Label typeLbl = new Label(type + " (" + o.getUnits() + " units)");
-        typeLbl.setStyle("-fx-font-weight: bold; -fx-text-fill: #0044aa;");
+        typeLbl.getStyleClass().add("meow-text");
 
         Label sec = new Label(o.getSection() + " - (" + o.getTime() + ")");
+        sec.getStyleClass().add("mew-text");
+        
         Label room = new Label("Location: " + safeString(o.getRoom()));
+        room.getStyleClass().add("mew-text");
+        
         Label day = new Label("Day: " + safeString(o.getDay()));
+        day.getStyleClass().add("mew-text");
 
         box.getChildren().addAll(typeLbl, sec, day, room);
         return box;
@@ -228,7 +227,7 @@ public class Planner_SearchAdd {
 
             if (!section.endsWith("L")) {
                 // treat as lecture/main
-                // Use code + section prefix as key (so that lectures with same code but different sections are distinct)
+                // Use code + section prefix as key so that lectures with same code but different sections are distinct
                 String key = o.getCode() + "-" + o.getSection();
                 lectures.put(key, o);
             }

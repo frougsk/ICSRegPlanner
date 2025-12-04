@@ -47,6 +47,7 @@ public class Planner_BasketView {
 		
         TableColumn<Offering, Offering> colDetails = new TableColumn<>("BASKET");
         colDetails.setPrefWidth(500);
+        colDetails.setStyle("-fx-font-size: 18px;");
         colDetails.setCellValueFactory(c ->
                 new SimpleObjectProperty<>(c.getValue()));
 
@@ -60,11 +61,13 @@ public class Planner_BasketView {
                     return;
                 }
                 VBox card = buildCard(offeringItem, offeringItem.getCode() + " " + offeringItem.getSection()); 
+                card.getStyleClass().add("mew-text");
   
 
                 // Remove Course from Basket
                 Button deleteBtn = new Button("Delete");
-                deleteBtn.setMinWidth(60);
+                deleteBtn.setMinWidth(50);
+                deleteBtn.getStyleClass().add("adddel-button");
                 
                 deleteBtn.setOnAction(e -> {
                     if (removeToBasket != null) {
@@ -84,23 +87,30 @@ public class Planner_BasketView {
     
               
      // =========== WARNING PANEL ===========
-		Text warn = new Text("WARNINGS / BASKET");
-		warn.getStyleClass().add("hello-style");
+		Text warn = new Text("MESSAGE");
+		warn.getStyleClass().add("warn-style");
+		warn.setStyle("-fx-text-fill: #192403;");
 		
-		warnings = new Label("-- All Clear --");
+		warnings = new Label("No Warnings.");
 		warnings.setWrapText(true);
 		warnings.setFont(Fonts.loadCrimson(18));
+		warnings.setStyle("-fx-font-size: 14px; ");
         
 		
         // =========== LAYOUT ===========              
-        VBox warnPanel = new VBox(10, warn, warnings);
+        VBox warnPanel = new VBox(5, warn, warnings);
+        warnPanel.getStyleClass().add("warn-box");
 		warnPanel.setAlignment(Pos.TOP_LEFT);
 		warnPanel.setMinWidth(250);
 		
-		VBox warnBasket = new VBox(20, warnPanel, table);
+		VBox basketBox = new VBox(table);
+		basketBox.setPadding(new Insets(3));
+		basketBox.setSpacing(5);
+
+		VBox warnBasket = new VBox(10, warnPanel, basketBox);
 		warnBasket.setAlignment(Pos.CENTER);
 		warnBasket.setPadding(new Insets(10, 5, 0, 5));
-		//warnBasket.getStyleClass().add("login-box");
+
         
         root.getChildren().add(warnBasket); 
         refresh(acc); 
@@ -122,16 +132,12 @@ public class Planner_BasketView {
         VBox box = new VBox(6);
         box.setPadding(new Insets(10));
         box.setMinWidth(200);
-        box.setStyle("""
-                -fx-background-color: #e8f0ff;
-                -fx-background-radius: 8;
-                -fx-border-radius: 8;
-                -fx-border-color: #4a85ff;
-                """);
+        box.getStyleClass().add("meow-box");
 
         Label typeLbl = new Label(type + " (" + o.getUnits() + " units)");
-        typeLbl.setStyle("-fx-font-weight: bold; -fx-text-fill: #0044aa;");
+        typeLbl.getStyleClass().add("meow-text");
         Label room = new Label("Location: " + safeString(o.getRoom()));
+        room.getStyleClass().add("mew-text");
        
 
         box.getChildren().addAll(typeLbl, room);
@@ -153,6 +159,6 @@ public class Planner_BasketView {
 	}
 	
 	public void setWarning(String text) {
-		warnings.setText(text == null || text.trim().isEmpty() ? "-- All Clear --": text);
+		warnings.setText(text == null || text.trim().isEmpty() ? "No Warnings.": text);
 	}
 }

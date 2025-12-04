@@ -36,6 +36,7 @@ public class Planner_Sched {
 		//=========== SCHEDULE GRID  ===========
 		Text plan = new Text("Course Plan");
 		plan.getStyleClass().add("hello-style");
+		plan.setStyle("-fx-text-fill: #192403;");
 		
 		String[] days = {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
 		for (int d = 0; d < days.length; d++) {
@@ -48,7 +49,7 @@ public class Planner_Sched {
 		int row =1;
 		for (int h = 7; h < 19; h++) {
 			Label hour = new Label(h + ":00 - " + (h+1) + ":00");
-			hour.setMinWidth(40);
+			hour.setMinWidth(10);
 			hour.getStyleClass().add("schedule-hour");
 			GridPane.setHalignment(hour, HPos.CENTER);
 			GridPane.setValignment(hour, VPos.CENTER);
@@ -61,7 +62,7 @@ public class Planner_Sched {
 		for (int h = 7; h < 19; h++) {
 			for (int d = 0; d < days.length; d++) {
 				StackPane cell = new StackPane();
-				cell.setMinSize(100, 20);
+				cell.setMinSize(120, 30);
 				cell.getStyleClass().add("schedule-cell");
 				schedGrid.add(cell,  d+1, row);
 			}
@@ -71,17 +72,17 @@ public class Planner_Sched {
 		// Column Fitting
 		for (int i = 0; i < 7; i++) {
 		    ColumnConstraints colConst = new ColumnConstraints();
-		    colConst.setPrefWidth(i == 0 ? 80 : 120); // first column narrower, others wider
-		    colConst.setMinWidth(80);
-		    colConst.setMaxWidth(120); // optional: fix max width
+		    colConst.setPrefWidth(i == 0 ? 90 : 130);
+		    colConst.setMinWidth(90);
+		    colConst.setMaxWidth(130);
 		    schedGrid.getColumnConstraints().add(colConst);
 		}
 
 		
 		// =========== LAYOUT ===========
-		schedGrid.setHgap(5);
-		schedGrid.setVgap(5);
-		schedGrid.setPadding(new Insets(10));
+		schedGrid.setHgap(7);
+		schedGrid.setVgap(7);
+		schedGrid.setPadding(new Insets(5));
 		
 		schedGrid.getStyleClass().add("schedule-grid");
 			
@@ -108,7 +109,7 @@ public class Planner_Sched {
 	    }
 	}
 	
-	// Helper Method: Place blocks on calendar
+	//Place blocks on calendar
 	private void placeOffering(Offering o) {
 	    if (o.getDay() == null || o.getTime() == null) return;
 
@@ -155,8 +156,9 @@ public class Planner_Sched {
 		        codeLabel.setStyle("-fx-font-family: VT323; -fx-font-size: 20px;");
 		        roomLabel.setStyle("-fx-font-size: 11px;");
 		        blockContent.getChildren().addAll(codeLabel, roomLabel);
+		        blockContent.setMinWidth(120);
 		        blockContent.setAlignment(Pos.CENTER);
-		        blockContent.setPadding(new Insets(3));
+		        blockContent.setPadding(new Insets(2));
 		        
 		        // Block Placement
 	            Integer col = dayToCol.get(day.toLowerCase());
@@ -177,7 +179,7 @@ public class Planner_Sched {
 	    }
 	}
 
-	// Helper Method: Multi-Day Parsing
+	// Multi-Day Parsing
 	private List<String> parseDaysDynamic(String dayStr) {
 	    List<String> days = new ArrayList<>();
 	    if (dayStr == null) return days;
