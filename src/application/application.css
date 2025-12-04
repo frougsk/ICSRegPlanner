@@ -370,3 +370,32 @@
 .clear-button:hover{
 	-fx-background-color: #e8938d;
 }
+
+.scroll-bar:vertical {
+    -fx-background-color: transparent;
+    -fx-pref-width: 8px;
+}
+
+.scroll-bar:vertical .track {
+    -fx-background-color: transparent;
+    -fx-background-insets: 0;
+    -fx-background-radius: 4;
+}
+
+.scroll-bar:vertical .thumb {
+    -fx-background-color: #b5bac1;
+    -fx-background-radius: 4;
+    -fx-padding: 2px;
+}
+
+.scroll-bar:vertical .thumb:hover {
+    -fx-background-color: #7f858e;
+}
+
+
+.scroll-bar:vertical .increment-button,
+.scroll-bar:vertical .decrement-button {
+    -fx-padding: 0;
+    -fx-background-color: transparent;
+    -fx-shape: " ";
+}
