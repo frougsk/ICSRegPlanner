@@ -72,6 +72,7 @@ public class PlannerPage {
 	        top.updateSched(account);
 	    });
 	    
+	    // =========== SAVE AND CLEAR BUTTONS ===========
 	    Button saveBtn = new Button("Save Schedule");
 	    saveBtn.getStyleClass().add("extra-button");
 	    saveBtn.setOnAction(e -> {
@@ -84,8 +85,7 @@ public class PlannerPage {
 	    });
 	    
 	    Button clearBtn = new Button("Clear All");
-	    clearBtn.getStyleClass().add("extra-button");
-	    clearBtn.setStyle("-fx-background-color: #f44336");
+	    clearBtn.getStyleClass().add("clear-button");
 	    clearBtn.setOnAction(e -> {
 	        account.getBasket().clear();
 	        BasketHandler.clearSavedBasket(account);
