@@ -16,6 +16,12 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
+import javafx.scene.effect.DropShadow;
+import javafx.animation.ScaleTransition;
+import javafx.util.Duration;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
+import javafx.scene.media.MediaView;
 
 public class InfoPage {
     private StackPane root;
@@ -42,9 +48,9 @@ public class InfoPage {
 		
 		VBox introBox = new VBox(20, hello, introParagraph);
 		introBox.setAlignment(Pos.TOP_LEFT);
-		introBox.setPadding(new Insets(25, 40, 0, 50));
+		introBox.setPadding(new Insets(0, 40, 0, 50));
 		introBox.setMaxWidth(width);
-		introBox.getStyleClass().add("login-box");
+		introBox.getStyleClass().add("gen-box");
 		
 		StackPane intro = new StackPane(introBox);
 		intro.setAlignment(Pos.CENTER);
@@ -102,10 +108,10 @@ public class InfoPage {
 		
 		VBox aboutBox = new VBox(50, ab, aboutPara1, aboutPara2, aboutPara3, aboutPara4);
 		aboutBox.setAlignment(Pos.TOP_LEFT);
-		aboutBox.setPadding(new Insets(10, 40, 10, 50));
+		aboutBox.setPadding(new Insets(0, 40, 10, 50));
 		aboutBox.setMaxWidth(width);
 		aboutBox.setSpacing(10);
-		aboutBox.getStyleClass().add("login-box");
+		aboutBox.getStyleClass().add("gen-box");
 		
 		StackPane about = new StackPane(aboutBox);
 		about.setAlignment(Pos.CENTER);
@@ -124,6 +130,61 @@ public class InfoPage {
 		credPara1.setPadding(new Insets(20, 20, 5, 20));
 		credPara1.setMaxWidth(width);
 		credPara1.getStyleClass().add("paragraph-style");
+		
+		// =========== ANIMATED VIDEOS ROW ===========
+		// Create MediaViews for normal looping GIFs
+		ImageView backendNormal = new ImageView(new Image(getClass().getResource("/assets/backend.gif").toExternalForm()));
+		backendNormal.setFitWidth(250);
+		backendNormal.setPreserveRatio(true);
+		
+		ImageView frontendNormal = new ImageView(new Image(getClass().getResource("/assets/frontend.gif").toExternalForm()));
+		frontendNormal.setFitWidth(250);
+		frontendNormal.setPreserveRatio(true);
+		
+		ImageView uiuxNormal = new ImageView(new Image(getClass().getResource("/assets/uiux.gif").toExternalForm()));
+		uiuxNormal.setFitWidth(250);
+		uiuxNormal.setPreserveRatio(true);
+		
+		// Create MediaPlayers for reveal videos
+		Media backendReveal = new Media(getClass().getResource("/assets/Backendreveal.m4v").toExternalForm());
+		MediaPlayer backendPlayer = new MediaPlayer(backendReveal);
+		backendPlayer.setCycleCount(MediaPlayer.INDEFINITE); // loops it
+		MediaView backendRevealView = new MediaView(backendPlayer);
+		backendRevealView.setFitWidth(250);
+		backendRevealView.setPreserveRatio(true);
+		
+		Media frontendReveal = new Media(getClass().getResource("/assets/Frontendreveal.m4v").toExternalForm());
+		MediaPlayer frontendPlayer = new MediaPlayer(frontendReveal);
+		frontendPlayer.setCycleCount(MediaPlayer.INDEFINITE);
+		MediaView frontendRevealView = new MediaView(frontendPlayer);
+		frontendRevealView.setFitWidth(250);
+		frontendRevealView.setPreserveRatio(true);
+		
+		Media uiuxReveal = new Media(getClass().getResource("/assets/Uiuxreveal.m4v").toExternalForm());
+		MediaPlayer uiuxPlayer = new MediaPlayer(uiuxReveal);
+		uiuxPlayer.setCycleCount(MediaPlayer.INDEFINITE);
+		MediaView uiuxRevealView = new MediaView(uiuxPlayer);
+		uiuxRevealView.setFitWidth(250);
+		uiuxRevealView.setPreserveRatio(true);
+		
+		// Create containers that will switch between normal and reveal
+		StackPane backendContainer = new StackPane(backendNormal);
+		backendContainer.setStyle("-fx-cursor: hand;");
+		
+		StackPane frontendContainer = new StackPane(frontendNormal);
+		frontendContainer.setStyle("-fx-cursor: hand;");
+		
+		StackPane uiuxContainer = new StackPane(uiuxNormal);
+		uiuxContainer.setStyle("-fx-cursor: hand;");
+		
+		// Add hover effects
+		addVideoHoverEffect(backendContainer, backendNormal, backendRevealView, backendPlayer);
+		addVideoHoverEffect(frontendContainer, frontendNormal, frontendRevealView, frontendPlayer);
+		addVideoHoverEffect(uiuxContainer, uiuxNormal, uiuxRevealView, uiuxPlayer);
+		
+		HBox gifsRow = new HBox(30, backendContainer, frontendContainer, uiuxContainer);
+		gifsRow.setAlignment(Pos.CENTER);
+		gifsRow.setPadding(new Insets(20, 0, 20, 0));
 		
 		// References
 		Text credRef = new Text("References");
@@ -145,12 +206,12 @@ public class InfoPage {
 		credPara2.setMaxWidth(width);
 		credPara2.getStyleClass().add("paragraph-style");
 
-		VBox creditBox = new VBox(50, cred, credPara1, ref, credPara2);
+		VBox creditBox = new VBox(50, cred, credPara1, gifsRow, ref, credPara2);
 		creditBox.setAlignment(Pos.TOP_LEFT);
-		creditBox.setPadding(new Insets(25, 40, 0, 50));
+		creditBox.setPadding(new Insets(0, 40, 0, 50));
 		creditBox.setMaxWidth(width);
 		creditBox.setSpacing(10);
-		creditBox.getStyleClass().add("login-box");
+		creditBox.getStyleClass().add("gen-box");
 		
 		StackPane credit = new StackPane(creditBox);
 		credit.setAlignment(Pos.CENTER);
@@ -158,7 +219,7 @@ public class InfoPage {
 
         // =========== Layout ===========
 		layout = new VBox(intro, about ,credit);
-        layout.setPadding(new Insets(20,50,20,50));
+        layout.setPadding(new Insets(10,50,20,50));
         layout.setStyle("-fx-background-color: #f7f8f7;");
         layout.setAlignment(Pos.CENTER);	
         layout.setSpacing(25);
@@ -173,5 +234,49 @@ public class InfoPage {
         root = new StackPane(scrollPane);
         root.setPrefSize(width, height);
         return root;
+    }
+    
+    // Add hover effect with video playback control
+    private void addVideoHoverEffect(StackPane container, ImageView normalView, MediaView revealView, MediaPlayer player) {
+        // Create glow effect
+        DropShadow glowEffect = new DropShadow();
+        glowEffect.setColor(Color.web("#BDD280"));
+        glowEffect.setRadius(30);
+        glowEffect.setSpread(0.7);
+        
+        container.setOnMouseEntered(e -> {
+            // Switch to video
+            container.getChildren().setAll(revealView);
+            
+            // Start video from beginning
+            player.stop();
+            player.seek(Duration.ZERO);
+            player.play();
+            
+            // Scale up animation
+            ScaleTransition scaleUp = new ScaleTransition(Duration.millis(200), container);
+            scaleUp.setToX(1.15);
+            scaleUp.setToY(1.15);
+            scaleUp.play();
+            
+            // Add glow effect
+            container.setEffect(glowEffect);
+            container.setStyle("-fx-background-radius: 30px;");
+        });
+        
+        container.setOnMouseExited(e -> {
+            // Stop video and switch back to normal GIF
+            player.stop();
+            container.getChildren().setAll(normalView);
+            
+            // Scale down animation
+            ScaleTransition scaleDown = new ScaleTransition(Duration.millis(200), container);
+            scaleDown.setToX(1.0);
+            scaleDown.setToY(1.0);
+            scaleDown.play();
+            
+            // Remove glow effect
+            container.setEffect(null);
+        });
     }
 }
