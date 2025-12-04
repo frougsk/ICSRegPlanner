@@ -6,19 +6,19 @@ import java.util.Map;
 
 import bases.Account;
 import bases.Offering;
-import planning.Planner_Sched;
+import planning.Planner_BasketView;
 
 public class AddCourse {
 
     // Main add course method - checks for binding requirements
-    public static boolean addCourse(Account account, Offering newCourse, Planner_Sched top) {
-        return addCourse(account, newCourse, top, null);
+    public static boolean addCourse(Account account, Offering newCourse, Planner_BasketView mid) {
+        return addCourse(account, newCourse, mid, null);
     }
 
-    public static boolean addCourse(Account account, Offering newCourse, Planner_Sched top,
+    public static boolean addCourse(Account account, Offering newCourse, Planner_BasketView mid,
                                     Map<String, Offering> allOfferings) {
 
-        top.setWarning(null);
+        mid.setWarning(null);
         String newCode = newCourse.getCode().trim().toUpperCase();
         String newSection = newCourse.getSection().trim().toUpperCase();
 
@@ -39,15 +39,15 @@ public class AddCourse {
                         Offering lecture = newCourse.isLab() ? boundOffering : newCourse;
                         Offering lab = newCourse.isLab() ? newCourse : boundOffering;
 
-                        top.error("[BINDING REQUIRED] " + lecture.getCode() + " " +
+                        mid.error("[BINDING REQUIRED] " + lecture.getCode() + " " +
                                 lecture.getSection() + " requires " +
                                 lab.getSection() + ". Use 'Add Lecture + Lab' button.");
 
                     } else {
-                        top.error("[BINDING ERROR] Required paired section not found: " + boundKey);
+                        mid.error("[BINDING ERROR] Required paired section not found: " + boundKey);
                     }
                 } else {
-                    top.error("[BINDING REQUIRED] This section requires its paired lecture/lab. " +
+                    mid.error("[BINDING REQUIRED] This section requires its paired lecture/lab. " +
                             "Required section: " + boundKey);
                 }
                 return false;
@@ -64,14 +64,14 @@ public class AddCourse {
 
         // Check if this exact offering is already in basket
         if (account.getBasket().containsKey(newCourse.getKey())) {
-            top.error("[ERROR] This course is already in your basket");
+            mid.error("[ERROR] This course is already in your basket");
             return false;
         }
 
         // If course already exists with different section, reject
         if (!sameCode.isEmpty()) {
             Offering existing = sameCode.get(0);
-            top.error("[ERROR] You already have " + existing.getCode() + " " +
+            mid.error("[ERROR] You already have " + existing.getCode() + " " +
                     existing.getSection() + " in your basket");
             return false;
         }
@@ -80,7 +80,7 @@ public class AddCourse {
         if (newCourse.getTime() != null && !newCourse.getTime().equalsIgnoreCase("TBA")) {
             for (Offering existing : account.getBasket().values()) {
                 if (conflicts(existing, newCourse)) {
-                    top.error("[ERROR] " + newCourse.getCode() + " " + newCourse.getSection() +
+                    mid.error("[ERROR] " + newCourse.getCode() + " " + newCourse.getSection() +
                             " overlaps with " + existing.getCode() + " " + existing.getSection());
                     return false;
                 }
@@ -89,16 +89,16 @@ public class AddCourse {
 
         // Add to basket
         account.addToBasket(newCourse);
-        top.success("[SUCCESS] Successfully added " + newCourse.getCode() + " " + newCourse.getSection());
+        mid.success("[SUCCESS] Successfully added " + newCourse.getCode() + " " + newCourse.getSection());
         return true;
     }
 
 
     // Add both lecture and lab together
     public static boolean addBoundPair(Account account, Offering offering1, Offering offering2,
-                                       Planner_Sched top) {
+                                       Planner_BasketView mid) {
 
-        top.setWarning(null);
+        mid.setWarning(null);
 
         // Determine which is lecture and which is lab
         Offering lecture = offering1.isLab() ? offering2 : offering1;
@@ -115,20 +115,20 @@ public class AddCourse {
 
         // Verify the lecture and lab match each other
         if (!lectureSection.equals(labPrefix)) {
-            top.error("[ERROR] Section mismatch: Lecture " + lectureSection +
+            mid.error("[ERROR] Section mismatch: Lecture " + lectureSection +
                     " doesn't match Lab " + labSection);
             return false;
         }
 
         // Check if this exact lecture is already in basket
         if (account.getBasket().containsKey(lecture.getKey())) {
-            top.error("[ERROR] Lecture " + lecture.getSection() + " is already in your basket");
+            mid.error("[ERROR] Lecture " + lecture.getSection() + " is already in your basket");
             return false;
         }
 
         // Check if this exact lab is already in basket
         if (account.getBasket().containsKey(lab.getKey())) {
-            top.error("[ERROR] Lab " + lab.getSection() + " is already in your basket");
+            mid.error("[ERROR] Lab " + lab.getSection() + " is already in your basket");
             return false;
         }
 
@@ -149,7 +149,7 @@ public class AddCourse {
 
         // If we already have both a lecture and a lab for this course, reject
         if (lectureCount > 0 && labCount > 0) {
-            top.error("[ERROR] You already have a complete lecture+lab set for " + code);
+            mid.error("[ERROR] You already have a complete lecture+lab set for " + code);
             return false;
         }
 
@@ -162,7 +162,7 @@ public class AddCourse {
                     String existingLectureSection = existing.getSection().toUpperCase();
 
                     if (!existingLectureSection.equals(labPrefix)) {
-                        top.error("[ERROR] Lab " + labSection + " doesn't match existing lecture " +
+                        mid.error("[ERROR] Lab " + labSection + " doesn't match existing lecture " +
                                 existingLectureSection);
                         return false;
                     }
@@ -182,7 +182,7 @@ public class AddCourse {
                             : existingLabSection.replace("L", "");
 
                     if (!existingLabPrefix.equals(lectureSection)) {
-                        top.error("[ERROR] Lecture " + lectureSection +
+                        mid.error("[ERROR] Lecture " + lectureSection +
                                 " doesn't match existing lab " + existingLabSection);
                         return false;
                     }
@@ -193,7 +193,7 @@ public class AddCourse {
         // Check for time conflicts with lecture
         for (Offering existing : account.getBasket().values()) {
             if (conflicts(existing, lecture)) {
-                top.error("[CONFLICT] Lecture " + lecture.getSection() +
+                mid.error("[CONFLICT] Lecture " + lecture.getSection() +
                         " conflicts with " + existing.getCode() + " " + existing.getSection());
                 return false;
             }
@@ -202,7 +202,7 @@ public class AddCourse {
         // Check for time conflicts with lab
         for (Offering existing : account.getBasket().values()) {
             if (conflicts(existing, lab)) {
-                top.error("[CONFLICT] Lab " + lab.getSection() +
+                mid.error("[CONFLICT] Lab " + lab.getSection() +
                         " conflicts with " + existing.getCode() + " " + existing.getSection());
                 return false;
             }
@@ -212,7 +212,7 @@ public class AddCourse {
         account.addToBasket(lecture);
         account.addToBasket(lab);
 
-        top.success("[SUCCESS] Added " + lecture.getCode() + " " +
+        mid.success("[SUCCESS] Added " + lecture.getCode() + " " +
                 lecture.getSection() + " (Lecture) and " +
                 lab.getSection() + " (Lab)");
 
@@ -364,3 +364,4 @@ public class AddCourse {
         return hour * 60 + min;
     }
 }
+
