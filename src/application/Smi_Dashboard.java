@@ -56,12 +56,17 @@ public class Smi_Dashboard {
 		Button dash = new Button("DASHBOARD");
 		Button planner = new Button("PLANNER");
 		Button course = new Button("COURSES");
+		Button profile = new Button("PROFILE");
 
 		dash.getStyleClass().add("sidebutton");
 		planner.getStyleClass().add("sidebutton");
 		course.getStyleClass().add("sidebutton");
+		profile.getStyleClass().add("sidebutton");
+		
+		Region spacer = new Region();
+		spacer.setPrefHeight(400);
 
-		sidebar.getChildren().addAll(dash, planner, course);
+		sidebar.getChildren().addAll(dash, planner, course, profile);
 		sidebar.setAlignment(Pos.TOP_CENTER);
 		
 		// =========== ANIMATION ===========
@@ -91,6 +96,7 @@ public class Smi_Dashboard {
         InfoPage info = new InfoPage();
         PlannerPage plan = new PlannerPage();
         CoursePage courses = new CoursePage();
+        ProfilePage myPage = new ProfilePage();
         
         // Show dash page by default
         showArea.getChildren().setAll(info.showInfo(width, height, account));
@@ -99,6 +105,7 @@ public class Smi_Dashboard {
         dash.setOnAction(e -> showArea.getChildren().setAll(info.showInfo(width, height, account)));
         planner.setOnAction(e -> showArea.getChildren().setAll(plan.showPlanner(width, height, account)));
         course.setOnAction(e -> showArea.getChildren().setAll(courses.showCourse(width, height)));
+        profile.setOnAction(e -> showArea.getChildren().setAll(myPage.showProfile(width, height, account)));
 
         Scene scene = new Scene(root, width, height);
         Platform.runLater(() -> scene.getRoot().requestFocus());
