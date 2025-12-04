@@ -4,6 +4,15 @@
     -fx-background-color: white;
 }
 
+.info-box{
+    -fx-pref-width: 450px;
+    -fx-pref-height: 150px;
+    -fx-background-radius: 15px;
+    -fx-background-color: #eaefdb;
+    -fx-effect: dropshadow(gaussian, #E7EABF, 20, 0.3, 0, 0);
+    -fx-padding: 30px 40px 30px 40px;
+}
+
 .login-box{
     -fx-pref-width: 450px;
     -fx-pref-height: 150px;
@@ -219,6 +228,12 @@
 	-fx-text-alignment: justify;
 }
 
+.info-style{
+	-fx-text-fill: #486F0E; 
+	-fx-font-size: 28px;
+	-fx-font-family: "VT323";
+}
+
 .details-style{
 	-fx-font-weight: bold;
 	-fx-font-family: "Dotempt 8bit";
@@ -332,4 +347,12 @@
 .error-button:hover{
     -fx-background-color: #E5E8C9;
     -fx-text-fill: #4E7711; 
+}
+
+.extra-button{
+	-fx-background-color: #4CAF50; 
+	-fx-text-fill: white; 
+	-fx-font-family: "VT323"; 
+	-fx-font-size: 18px; 
+	-fx-padding: 10 20;
 }
