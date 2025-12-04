@@ -13,6 +13,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Hyperlink;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -32,20 +33,36 @@ public class Smi_Dashboard {
 		// =========== TOP BAR ===========
 		ImageView brand = new ImageView(Login.class.getResource("/assets/brand.png").toExternalForm());
 		double ogWidth = brand.getImage().getWidth();
-		brand.setPreserveRatio(true); brand.setFitWidth(ogWidth * 0.05);
-		
-		// Make menu button
+		brand.setPreserveRatio(true);
+		brand.setFitWidth(ogWidth * 0.05);
+
+		// Menu button
 		ImageView borgir = new ImageView(Login.class.getResource("/assets/menubutton.png").toExternalForm());
-		borgir.setPreserveRatio(true); borgir.setFitWidth(ogWidth * 0.02);
+		borgir.setPreserveRatio(true);
+		borgir.setFitWidth(ogWidth * 0.02);
 		Button menuButton = new Button();
 		menuButton.setGraphic(borgir);
 		menuButton.setStyle("-fx-background-color: transparent;");
 		
-		HBox topBar = new HBox(20,menuButton,brand);
+		ImageView userIcon = new ImageView(Login.class.getResource("/assets/icon.png").toExternalForm());
+		userIcon.setPreserveRatio(true);
+		userIcon.setFitWidth(ogWidth * 0.02);
+
+		Hyperlink profile = new Hyperlink(account.getFirstName().toUpperCase());
+		profile.setGraphic(userIcon);
+		profile.getStyleClass().add("profile");
+
+		profile.setGraphicTextGap(8);
+
+		Region rightSpacer = new Region();
+		HBox.setHgrow(rightSpacer, javafx.scene.layout.Priority.ALWAYS);
+
+		HBox topBar = new HBox(20, menuButton, brand, rightSpacer, profile);
 		topBar.setAlignment(Pos.CENTER_LEFT);
-		topBar.setPadding(new Insets(0, 0, 0, 20));
+		topBar.setPadding(new Insets(0, 20, 0, 20));
 		topBar.setPrefHeight(50);
 		topBar.setStyle("-fx-background-color: #eaefdb;");
+
 				
 		// =========== SIDE BAR ===========
 		VBox sidebar = new VBox(10);
@@ -56,17 +73,15 @@ public class Smi_Dashboard {
 		Button dash = new Button("DASHBOARD");
 		Button planner = new Button("PLANNER");
 		Button course = new Button("COURSES");
-		Button profile = new Button("PROFILE");
 
 		dash.getStyleClass().add("sidebutton");
 		planner.getStyleClass().add("sidebutton");
 		course.getStyleClass().add("sidebutton");
-		profile.getStyleClass().add("sidebutton");
-		
+
 		Region spacer = new Region();
 		spacer.setPrefHeight(400);
 
-		sidebar.getChildren().addAll(dash, planner, course, profile);
+		sidebar.getChildren().addAll(dash, planner, course);
 		sidebar.setAlignment(Pos.TOP_CENTER);
 		
 		// =========== ANIMATION ===========
@@ -113,3 +128,4 @@ public class Smi_Dashboard {
         scene.getStylesheets().add(Smi_Dashboard.class.getResource("application.css").toExternalForm());
         return scene;
     }
+}
