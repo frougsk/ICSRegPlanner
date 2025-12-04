@@ -12,6 +12,7 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 
@@ -50,7 +51,7 @@ public class PlannerPage {
 	            String labPrefix = section.contains("-") ? section.split("-")[0] : section.replace("L", "");
 	            String lectureKey = code + "-" + labPrefix;
 	            account.removeFromBasket(lectureKey);
-	            middle.success("[SUCCESS] Removed " + code + " " + section + " and its lecture " + labPrefix);
+	            middle.success("[SUCCESS] Removed " + code + " " + section + " - " + labPrefix);
 	        } else {
 	            // If removing a lecture (e.g., "G"), find and remove all matching labs (e.g., "G-1L", "G-2L", etc.)
 	            List<String> keysToRemove = new ArrayList<>();
@@ -78,7 +79,7 @@ public class PlannerPage {
 	        if (success) {
 	            middle.success("[SUCCESS] Schedule saved successfully!");
 	        } else {
-	            middle.error("[ERROR] Failed to save schedule");
+	            middle.error("[ERROR] Failed to save schedule.");
 	        }
 	    });
 	    
@@ -89,7 +90,7 @@ public class PlannerPage {
 	        BasketHandler.clearSavedBasket(account);
 	        middle.refresh(account);
 	        top.updateSched(account);
-	        middle.success("[SUCCESS] Basket cleared");
+	        middle.success("[SUCCESS] Basket cleared.");
 	    });
 	    
 	    HBox buttonBox = new HBox(15, saveBtn, clearBtn);
