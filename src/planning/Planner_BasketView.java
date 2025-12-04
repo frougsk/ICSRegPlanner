@@ -121,7 +121,7 @@ public class Planner_BasketView {
 	private VBox buildCard(Offering o, String type) {
         VBox box = new VBox(6);
         box.setPadding(new Insets(10));
-        box.setMinWidth(135);
+        box.setMinWidth(200);
         box.setStyle("""
                 -fx-background-color: #e8f0ff;
                 -fx-background-radius: 8;
