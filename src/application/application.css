@@ -208,8 +208,8 @@
 }
 
 .hello-style{
-	-fx-font-size: 32px;
-	-fx-font-family: "Dotempt 8bit";
+	-fx-font-size: 60px;
+	-fx-font-family: "Jersey 10";
 	-fx-font-weight: bold;
 	-fx-text-alignment: justify;
 }
