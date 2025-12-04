@@ -73,21 +73,19 @@ public class ProfilePage {
 		info.getStyleClass().add("info-box");
 		
 		// =========== Buttons ===========
-		// Leads back to log in page
 		AccountLoader accload = new AccountLoader();
 		ArrayList<Account> accounts = accload.getAccounts(Paths.get("accounts_data/accounts.csv"));
 		
 		Button out = new Button("Sign Out");
 		out.getStyleClass().add("extra-button");
 		out.setOnAction(e -> mainStage.setScene(Login.welcomeShow(width, height, mainStage, accounts)));
-
-		// Exits the program
+		
 		Button exit = new Button("Exit");
 		exit.getStyleClass().add("extra-button");
 		exit.setOnAction(e -> System.exit(0));
 		
-		HBox btn = new HBox(5, out, exit);
-		btn.setAlignment(Pos.CENTER_RIGHT);
+		HBox btn = new HBox(20, out, exit);
+		btn.setAlignment(Pos.CENTER);
 
 		// =========== Layout ===========
 		Region moreSpace = new Region();
