@@ -304,7 +304,7 @@ public class Planner_SearchAdd {
     		allowedCourses = master;
     	} else if (userProg.contains("PHD")) {
     		allowedCourses = phd;
-    	} else if (userProg.contains("TECH")) {
+    	} else if (userProg.contains("MIT")) {
     		allowedCourses = mit;
     	} else return false;	   	
    
