@@ -27,8 +27,6 @@ public class PlannerPage {
 	private StackPane root;
 	private VBox layout = new VBox();
 	
-	private static final Path BASKET_CSV = Path.of("accounts_data", "basket.csv");
-	
 	public StackPane showPlanner(double width, double height, Account account) {
 	    // Load saved basket when planner opens
 	    BasketHandler.loadBasket(account);
@@ -52,7 +50,7 @@ public class PlannerPage {
 	            String labPrefix = section.contains("-") ? section.split("-")[0] : section.replace("L", "");
 	            String lectureKey = code + "-" + labPrefix;
 	            account.removeFromBasket(lectureKey);
-	            top.success("[SUCCESS] Removed " + code + " " + section + " and its lecture " + labPrefix);
+	            middle.success("[SUCCESS] Removed " + code + " " + section + " and its lecture " + labPrefix);
 	        } else {
 	            // If removing a lecture (e.g., "G"), find and remove all matching labs (e.g., "G-1L", "G-2L", etc.)
 	            List<String> keysToRemove = new ArrayList<>();
@@ -65,7 +63,7 @@ public class PlannerPage {
 	            for (String key : keysToRemove) {
 	                account.removeFromBasket(key);
 	            }
-	            top.success("[SUCCESS] Removed " + code + " " + section + " and its lab(s)");
+	            middle.success("[SUCCESS] Removed " + code + " " + section + " and its lab(s)");
 	        }
 	        
 	        middle.refresh(account);
@@ -78,9 +76,9 @@ public class PlannerPage {
 	    saveBtn.setOnAction(e -> {
 	        boolean success = BasketHandler.saveBasket(account);
 	        if (success) {
-	            top.success("[SUCCESS] Schedule saved successfully!");
+	            middle.success("[SUCCESS] Schedule saved successfully!");
 	        } else {
-	            top.error("[ERROR] Failed to save schedule");
+	            middle.error("[ERROR] Failed to save schedule");
 	        }
 	    });
 	    
@@ -91,7 +89,7 @@ public class PlannerPage {
 	        BasketHandler.clearSavedBasket(account);
 	        middle.refresh(account);
 	        top.updateSched(account);
-	        top.success("[SUCCESS] Basket cleared");
+	        middle.success("[SUCCESS] Basket cleared");
 	    });
 	    
 	    HBox buttonBox = new HBox(15, saveBtn, clearBtn);
@@ -99,7 +97,9 @@ public class PlannerPage {
 	    buttonBox.setPadding(new Insets(10));
 	    
 	    // =========== Layout ===========
-	    layout = new VBox(15, buttonBox, top.getNode(), middle.getNode(), bottom.getNode());
+	    HBox topView = new HBox(20, top.getNode(), middle.getNode());
+
+	    layout = new VBox(15, buttonBox, topView, bottom.getNode());
 	    layout.setAlignment(Pos.TOP_CENTER);
 	    layout.setPadding(new Insets(20,40,20,40));
 	    layout.setStyle("-fx-background-color: white;");
