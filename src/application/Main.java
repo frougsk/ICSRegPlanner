@@ -9,9 +9,7 @@ import javafx.application.Application;
 import javafx.geometry.Rectangle2D;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
-import javafx.scene.Scene;
 import javafx.scene.image.Image;
-import javafx.scene.layout.BorderPane;
 import javafx.scene.text.Font;
 
 // Other Java imports
@@ -20,7 +18,7 @@ import java.nio.file.Paths;
 
 public class Main extends Application {
 	@Override
-	public void start(Stage mainStage) {
+	public void start(@SuppressWarnings("exports") Stage mainStage) {
 		// Get fonts
 		Font.loadFont(getClass().getResource("/fonts/dotemp-8bit.otf").toExternalForm(), 10);
 		Font.loadFont(getClass().getResource("/fonts/CrimsonPro-VariableFont_wght.ttf").toExternalForm(), 10);
