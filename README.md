@@ -21,6 +21,73 @@
 
 ## Getting Started
 
+## Project Structure
+smiCS/
+├── src/
+│   ├── application/
+│   │   ├── Main.java                    # Application entry point
+│   │   ├── Login.java                   # Login screen and authentication
+│   │   ├── CreateAccount.java           # Account creation interface
+│   │   ├── Smi_Dashboard.java           # Main dashboard controller
+│   │   ├── AddCourse.java               # Course adding logic & validation
+│   │   ├── Fonts.java                   # Font loader utility
+│   │   ├── Notifier.java                # Alert/notification popups
+│   │   └── application.css              # Application styling
+│   │
+│   ├── bases/
+│   │   ├── Account.java                 # User account model
+│   │   ├── Course.java                  # Course information model
+│   │   ├── Offering.java                # Course offering model
+│   │   └── YearSet.java                 # Academic year offerings container
+│   │
+│   ├── fileHandlers/
+│   │   ├── AccountLoader.java           # Load accounts from CSV
+│   │   ├── BasketHandler.java           # Save/load user schedules
+│   │   ├── CourseLoader.java            # Load course catalog
+│   │   └── OfferingLoader.java          # Load course offerings
+│   │
+│   ├── planning/
+│   │   ├── Planner_Sched.java           # Schedule grid visualization
+│   │   ├── Planner_BasketView.java      # Course basket display
+│   │   └── Planner_SearchAdd.java       # Course search and add interface
+│   │
+│   └── screens/
+│       ├── InfoPage.java                # Dashboard/info screen
+│       ├── CoursePage.java              # Course catalog browser
+│       ├── PlannerPage.java             # Planner main screen
+│       ├── ProfilePage.java             # User profile screen
+│       └── TutorialPage.java            # Video tutorial screen
+│
+├── data/
+│   ├── course_offerings.csv             # Available course offerings
+│   ├── ics_cmsc_courses.csv             # BSCS course catalog
+│   ├── ics_mscs_courses.csv             # MSCS course catalog
+│   ├── ics_phd_courses.csv              # PhD CS course catalog
+│   └── ics_mit_courses.csv              # MIT course catalog
+│
+├── accounts_data/
+│   ├── accounts.csv                     # User accounts database
+│   └── [username]_basket.csv            # Individual user schedules
+│
+├── assets/
+│   ├── icon.png                         # App icon
+│   ├── brand.png                        # Brand logo
+│   ├── menubutton.png                   # Menu button icon
+│   ├── LandingPage.gif                  # Landing page animation
+│   ├── Hang.gif / Hng2.gif              # Hanging character animations
+│   ├── backend.gif / Backendreveal.m4v  # Backend team animations
+│   ├── frontend.gif / Frontendreveal.m4v # Frontend team animations
+│   ├── uiux.gif / Uiuxreveal.m4v        # UI/UX team animations
+│   ├── PlannerTutorial.gif              # Planner tutorial
+│   ├── ViewTutorial.gif                 # View tutorial
+│   ├── tutorial.m4v                     # Full tutorial video
+│   ├── lay.png / yay.png                # Notification characters
+│   └── Unhovered_sign.png / Hovered_sign.png  # Button states
+│
+└── fonts/
+    ├── dotemp-8bit.otf                  # Retro display font
+    └── CrimsonPro-VariableFont_wght.ttf # Body text font
+
 ### First Time Users
 
 1. **Launch the Application**  
@@ -129,5 +196,13 @@ Access your profile by clicking your name in the top-right corner:
 ## License & Credits
 Smiski Official Website: https://smiski.com/
 Created by Group JELly.ace for CMSC 22 at the University of the Philippines Los Baños.
+
+---
+
+## Problems
+For issues;
+feel free to contact any of te following:
+jbcalleja@up.edu.ph
+mpgevana@up.edu.ph
 
 For questions or issues, please contact the development team through your course instructor.
