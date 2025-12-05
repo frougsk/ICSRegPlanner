@@ -11,18 +11,20 @@ import planning.Planner_BasketView;
 public class AddCourse {
 
     // Main add course method - checks for binding requirements
-    public static boolean addCourse(Account account, Offering newCourse, Planner_BasketView mid) {
+    @SuppressWarnings("exports")
+	public static boolean addCourse(Account account, Offering newCourse, Planner_BasketView mid) {
         return addCourse(account, newCourse, mid, null);
     }
-
-    public static boolean addCourse(Account account, Offering newCourse, Planner_BasketView mid,
+    
+    @SuppressWarnings("exports")
+	public static boolean addCourse(Account account, Offering newCourse, Planner_BasketView mid,
                                     Map<String, Offering> allOfferings) {
 
         mid.setWarning(null);
         String newCode = newCourse.getCode().trim().toUpperCase();
-        String newSection = newCourse.getSection().trim().toUpperCase();
 
         // Check if offering has a binding requirement
+        // Binding meaning if that lecture has a lab
         if (newCourse.hasBinding()) {
             String boundKey = newCourse.getBoundKey();
 
@@ -41,7 +43,7 @@ public class AddCourse {
 
                         mid.error("[BINDING REQUIRED] " + lecture.getCode() + " " +
                                 lecture.getSection() + " requires " +
-                                lab.getSection() + ". Use 'Add Lecture + Lab' button.");
+                                lab.getSection());
 
                     } else {
                         mid.error("[BINDING ERROR] Required paired section not found: " + boundKey);
@@ -68,14 +70,14 @@ public class AddCourse {
             return false;
         }
 
-        // If course already exists with different section, reject
+        // If course already exists with different section, NOO
         if (!sameCode.isEmpty()) {
             Offering existing = sameCode.get(0);
             mid.error("[ERROR] You already have " + existing.getCode() + " in your basket.");
             return false;
         }
 
-        // Schedule conflict check (skip if TBA)
+        // Schedule conflict check iF TBA then skip
         if (newCourse.getTime() != null && !newCourse.getTime().equalsIgnoreCase("TBA")) {
             for (Offering existing : account.getBasket().values()) {
                 if (conflicts(existing, newCourse)) {
@@ -94,27 +96,45 @@ public class AddCourse {
 
 
     // Add both lecture and lab together
-    public static boolean addBoundPair(Account account, Offering offering1, Offering offering2,
+    @SuppressWarnings("exports")
+	public static boolean addBoundPair(Account account, Offering offering1, Offering offering2,
                                        Planner_BasketView mid) {
 
         mid.setWarning(null);
 
         // Determine which is lecture and which is lab
-        Offering lecture = offering1.isLab() ? offering2 : offering1;
-        Offering lab = offering1.isLab() ? offering1 : offering2;
+        Offering lecture;
+        Offering lab;
+
+        if (offering1.isLab()) {
+            // offering1 is the lab, so offering2 must be the lecture
+            lecture = offering2;
+            lab = offering1;
+        } else {
+            // offering1 is the lecture, so offering2 must be the lab
+            lecture = offering1;
+            lab = offering2;
+        }
 
         String code = lecture.getCode();
         String lectureSection = lecture.getSection().toUpperCase();
         String labSection = lab.getSection().toUpperCase();
 
         // Extract lab prefix (e.g., "G" from "G-1L")
-        String labPrefix = labSection.contains("-")
-                ? labSection.split("-")[0]
-                : labSection.replace("L", "");
+        String labPrefix;
+        if (labSection.contains("-")) {
+            // Example: CMSC22-UV5L to CMSC22
+            labPrefix = labSection.split("-")[0];
+        } else {
+            // Example: CMSC22UV5L-CMSC22
+            int index = labSection.lastIndexOf('L');
+            labPrefix = (index > 0) ? labSection.substring(0, index) : labSection;
+        }
+
 
         // Verify the lecture and lab match each other
         if (!lectureSection.equals(labPrefix)) {
-            mid.error("[ERROR] Section mismatch: Lecture " + lectureSection +
+            mid.error("[ERROR] Section mismatch. Lecture " + lectureSection +
                     " doesn't match Lab " + labSection);
             return false;
         }
@@ -148,7 +168,7 @@ public class AddCourse {
 
         // If we already have both a lecture and a lab for this course, reject
         if (lectureCount > 0 && labCount > 0) {
-            mid.error("[ERROR] You already have a complete lecture+lab set for " + code);
+            mid.error("[ERROR] You already have this course in your planner.");
             return false;
         }
 
@@ -339,28 +359,12 @@ public class AddCourse {
 
     // Convert "HH:MM" to minutes from midnight
     static int toMinutes(String time) {
-
         time = time.trim();
         String[] parts = time.split(":");
 
-        if (parts.length < 2) {
-            try {
-                int hour = Integer.parseInt(time);
-                parts = new String[]{String.valueOf(hour), "00"};
-            } catch (NumberFormatException e) {
-                return 0;
-            }
-        }
-
         int hour = Integer.parseInt(parts[0].trim());
-        int min = Integer.parseInt(parts[1].trim());
+        int min = (parts.length > 1) ? Integer.parseInt(parts[1].trim()) : 0;
 
-        // Convert 1–6 PM rule
-        if (hour >= 1 && hour <= 6) {
-            hour += 12;
-        }
-
-        return hour * 60 + min;
+        return hour * 60 + min;  // direct conversion
     }
 }
-
