@@ -1,6 +1,5 @@
 package application;
 
-import javafx.scene.text.*;
 import javafx.scene.text.Font;
 
 public class Fonts {
@@ -11,7 +10,8 @@ public class Fonts {
     private Fonts() {}
     
     // Getters
-    public static Font load(String uri, double size) {
+    @SuppressWarnings("exports")
+	public static Font load(String uri, double size) {
         Font f = Font.loadFont(Fonts.class.getResourceAsStream(uri), size);
         if (f == null) {
             try {
@@ -23,11 +23,13 @@ public class Fonts {
         return f;
     }
     
-    public static Font loadDotemp(int size) {
+    @SuppressWarnings("exports")
+	public static Font loadDotemp(int size) {
         return load(DOTEMP, size);
     }
     
-    public static Font loadCrimson(int size) {
+    @SuppressWarnings("exports")
+	public static Font loadCrimson(int size) {
     	return load(CRIMSON, size);
     }
 }
