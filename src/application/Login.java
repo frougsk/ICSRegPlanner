@@ -27,7 +27,8 @@ import java.util.ArrayList;
 
 public class Login {
 
-    public static Scene welcomeShow(double width, double height, Stage mainStage, ArrayList<Account> accounts) {
+    @SuppressWarnings("exports")
+	public static Scene welcomeShow(double width, double height, Stage mainStage, ArrayList<Account> accounts) {
 
         // =========== TOP BAR ===========
         ImageView brand = new ImageView(Login.class.getResource("/assets/brand.png").toExternalForm());
@@ -217,7 +218,8 @@ public class Login {
         return scene;
     }
 
-    public static Scene loginSuccess(double width, double height, Stage mainStage, Account account, HBox topBar) {
+    @SuppressWarnings("exports")
+	public static Scene loginSuccess(double width, double height, Stage mainStage, Account account, HBox topBar) {
 
         ImageView suc = new ImageView(Login.class.getResource("/assets/login_success.png").toExternalForm());
         double ogWidth = suc.getImage().getWidth();
