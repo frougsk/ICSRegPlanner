@@ -17,6 +17,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
@@ -65,7 +66,8 @@ public class Smi_Dashboard {
 		sidebar.setPadding(new Insets(10,0,0,0));
 		sidebar.getStyleClass().add("sidebar");
 		sidebar.setTranslateX(-140);
-		
+
+		// Buttons at the top
 		Button dash = new Button("DASHBOARD");
 		Button planner = new Button("PLANNER");
 		Button course = new Button("COURSES");
@@ -74,11 +76,15 @@ public class Smi_Dashboard {
 		planner.getStyleClass().add("sidebutton");
 		course.getStyleClass().add("sidebutton");
 
-		Region spacer = new Region();
-		spacer.setPrefHeight(400);
+		Button tutorial = new Button("TUTORIAL");
+		tutorial.getStyleClass().add("sidebutton");
 
-		sidebar.getChildren().addAll(dash, planner, course);
+		Region spacer = new Region();
+		VBox.setVgrow(spacer, Priority.ALWAYS);
+
+		sidebar.getChildren().addAll(dash, planner, course, spacer, tutorial);
 		sidebar.setAlignment(Pos.TOP_CENTER);
+
 		
 		// =========== ANIMATION ===========
 		final boolean[] visible = {false};
@@ -109,15 +115,18 @@ public class Smi_Dashboard {
         PlannerPage plan = new PlannerPage();
         CoursePage courses = new CoursePage();
         ProfilePage myPage = new ProfilePage();
-        
+        TutorialPage tutorialPage = new TutorialPage();
+
         // Show dash page by default
         showArea.getChildren().setAll(info.showInfo(width, height, account));
-        
+
         // Button actions
         dash.setOnAction(e -> showArea.getChildren().setAll(info.showInfo(width, height, account)));
         planner.setOnAction(e -> showArea.getChildren().setAll(plan.showPlanner(width, height, account)));
         course.setOnAction(e -> showArea.getChildren().setAll(courses.showCourse(width, height)));
         profile.setOnAction(e -> showArea.getChildren().setAll(myPage.showProfile(width, height, mainStage, account)));
+        tutorial.setOnAction(e -> showArea.getChildren().setAll(tutorialPage.showTutorial(width, height)));
+
 
         Scene scene = new Scene(root, width, height);
         Platform.runLater(() -> scene.getRoot().requestFocus());
