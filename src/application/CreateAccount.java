@@ -3,28 +3,19 @@ package application;
 // Package imports
 import bases.Account;
 
-// JavaFX imports
-import javafx.util.Duration;
-import javafx.animation.FadeTransition;
-import javafx.animation.PauseTransition;
 import javafx.application.Platform;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
-import javafx.scene.text.TextFlow;
 import javafx.stage.Stage;
 
 //Java Imports
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.BufferedWriter;
@@ -34,6 +25,7 @@ public class CreateAccount {
 	
 	private static final String CSV_PATH = "accounts_data/accounts.csv";
 
+	@SuppressWarnings("exports")
 	public static Scene createAccount(double width, double height, Stage mainStage, Scene loginScene, ArrayList<Account> accounts) {
 	    // =========== CREATE ACCOUNT BOX  ===========
 	    ImageView sign = new ImageView(Login.class.getResource("/assets/icon.png").toExternalForm());
